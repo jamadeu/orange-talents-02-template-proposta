@@ -6,11 +6,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -23,9 +24,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-@AutoConfigureDataJpa
+@AutoConfigureTestDatabase
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@ActiveProfiles("test")
 class PropostaControllerTest {
 
     @Autowired
@@ -387,5 +389,21 @@ class PropostaControllerTest {
         Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
 
         assertTrue(propostaOptional.isEmpty());
+    }
+
+    @Test
+    @DisplayName("cria retorna status 422 quando o solicitante ja possui uma proposta.")
+    void cria_Retorna422_QuandoSolicitanteJaPossuiProposta() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = NovaPropostaRequestBuilder.criaNovaPropostaRequest();
+        propostaRepository.save(novaPropostaRequest.toModel());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/proposta")
+                .content(objectMapper.writeValueAsString(novaPropostaRequest))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .is(422)
+        );
     }
 }
