@@ -4,10 +4,7 @@ import br.com.zup.proposta.compartilhado.anotacoes.CpfOrCnpj;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -24,24 +21,29 @@ public class Proposta {
     @NotBlank
     @CpfOrCnpj
     @JsonProperty
+    @Column(nullable = false, unique = true)
     private String documento;
 
     @NotBlank
     @Email
     @JsonProperty
+    @Column(nullable = false)
     private String email;
 
     @NotBlank
     @JsonProperty
+    @Column(nullable = false)
     private String nome;
 
     @NotBlank
     @JsonProperty
+    @Column(nullable = false)
     private String endereco;
 
     @NotNull
     @Positive
     @JsonProperty
+    @Column(nullable = false)
     private BigDecimal salario;
 
     @Deprecated
