@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -65,7 +66,7 @@ class PropostaControllerTest {
                 "email@test.com",
                 "Nome",
                 "Endereço",
-                2000
+                new BigDecimal(2000)
         );
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
                 .post("/proposta")
@@ -92,7 +93,7 @@ class PropostaControllerTest {
                 "email@test.com",
                 "Nome",
                 "Endereço",
-                2000
+                new BigDecimal(2000)
         );
 
         mockMvc.perform(MockMvcRequestBuilders
@@ -119,7 +120,7 @@ class PropostaControllerTest {
                 "email@test.com",
                 "Nome",
                 "Endereço",
-                2000
+                new BigDecimal(2000)
         );
 
         mockMvc.perform(MockMvcRequestBuilders
@@ -144,7 +145,7 @@ class PropostaControllerTest {
                 "email@test.com",
                 "Nome",
                 "Endereço",
-                2000
+                new BigDecimal(2000)
         );
 
         mockMvc.perform(MockMvcRequestBuilders
@@ -169,7 +170,7 @@ class PropostaControllerTest {
                 null,
                 "Nome",
                 "Endereço",
-                2000
+                new BigDecimal(2000)
         );
 
         mockMvc.perform(MockMvcRequestBuilders
@@ -194,7 +195,7 @@ class PropostaControllerTest {
                 "",
                 "Nome",
                 "Endereço",
-                2000
+                new BigDecimal(2000)
         );
 
         mockMvc.perform(MockMvcRequestBuilders
@@ -219,7 +220,7 @@ class PropostaControllerTest {
                 "email invalido",
                 "Nome",
                 "Endereço",
-                2000
+                new BigDecimal(2000)
         );
 
         mockMvc.perform(MockMvcRequestBuilders
@@ -244,7 +245,7 @@ class PropostaControllerTest {
                 "email@test.com",
                 "",
                 "Endereço",
-                2000
+                new BigDecimal(2000)
         );
 
         mockMvc.perform(MockMvcRequestBuilders
@@ -269,7 +270,7 @@ class PropostaControllerTest {
                 "email@test.com",
                 null,
                 "Endereço",
-                2000
+                new BigDecimal(2000)
         );
 
         mockMvc.perform(MockMvcRequestBuilders
@@ -294,7 +295,7 @@ class PropostaControllerTest {
                 "email@test.com",
                 "Nome",
                 "",
-                2000
+                new BigDecimal(2000)
         );
 
         mockMvc.perform(MockMvcRequestBuilders
@@ -319,7 +320,7 @@ class PropostaControllerTest {
                 "email@test.com",
                 "Nome",
                 null,
-                2000
+                new BigDecimal(2000)
         );
 
         mockMvc.perform(MockMvcRequestBuilders
@@ -371,7 +372,7 @@ class PropostaControllerTest {
                 "email@test.com",
                 "Nome",
                 "Endereço",
-                salario
+                new BigDecimal(salario)
         );
 
         mockMvc.perform(MockMvcRequestBuilders

@@ -15,24 +15,24 @@ public class NovaPropostaRequest {
     @NotBlank
     @CpfOrCnpj
     @JsonProperty
-    final String documento;
+    private final String documento;
     @NotBlank
     @Email
     @JsonProperty
-    final String email;
+    private final String email;
     @NotBlank
     @JsonProperty
-    final String nome;
+    private final String nome;
     @NotBlank
     @JsonProperty
-    final String endereco;
+    private final String endereco;
     @NotNull
     @Positive
     @JsonProperty
-    final Integer salario;
+    private final BigDecimal salario;
 
     @JsonCreator
-    public NovaPropostaRequest(@NotBlank String documento, @NotBlank @Email String email, @NotBlank String nome, @NotBlank String endereco, @NotNull @Positive Integer salario) {
+    public NovaPropostaRequest(@NotBlank String documento, @NotBlank @Email String email, @NotBlank String nome, @NotBlank String endereco, @NotNull @Positive BigDecimal salario) {
         this.documento = documento;
         this.email = email;
         this.nome = nome;
@@ -41,7 +41,7 @@ public class NovaPropostaRequest {
     }
 
     public Proposta toModel() {
-        return new Proposta(this.documento, this.email, this.nome, this.endereco, new BigDecimal(salario));
+        return new Proposta(this.documento, this.email, this.nome, this.endereco, salario);
     }
 
     public String getDocumento() {

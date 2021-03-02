@@ -19,30 +19,30 @@ public class Proposta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @NotBlank
     @CpfOrCnpj
     @JsonProperty
-    String documento;
+    private String documento;
 
     @NotBlank
     @Email
     @JsonProperty
-    String email;
+    private String email;
 
     @NotBlank
     @JsonProperty
-    String nome;
+    private String nome;
 
     @NotBlank
     @JsonProperty
-    String endereco;
+    private String endereco;
 
     @NotNull
     @Positive
     @JsonProperty
-    BigDecimal salario;
+    private BigDecimal salario;
 
     @Deprecated
     public Proposta() {

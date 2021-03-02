@@ -1,5 +1,7 @@
 package br.com.zup.proposta.proposta;
 
+import java.math.BigDecimal;
+
 public class NovaPropostaRequestBuilder {
 
     public static NovaPropostaRequest criaNovaPropostaRequest() {
@@ -8,11 +10,11 @@ public class NovaPropostaRequestBuilder {
                 "email@test.com",
                 "Nome",
                 "Endereço",
-                2000
+                new BigDecimal(2000)
         );
     }
 
-    public static NovaPropostaRequest criaNovaPropostaRequest(String documento, String email, String nome, String endereco, Integer salario) {
+    public static NovaPropostaRequest criaNovaPropostaRequest(String documento, String email, String nome, String endereco, BigDecimal salario) {
         return new NovaPropostaRequest(
                 documento,
                 email,
