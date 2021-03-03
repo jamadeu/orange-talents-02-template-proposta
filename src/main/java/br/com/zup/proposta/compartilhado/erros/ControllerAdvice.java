@@ -1,22 +1,28 @@
 package br.com.zup.proposta.compartilhado.erros;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @RestControllerAdvice
 public class ControllerAdvice {
-    @Autowired
-    MessageSource messageSource;
+
+    final MessageSource messageSource;
+
+    public ControllerAdvice(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
 
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -29,5 +35,13 @@ public class ControllerAdvice {
             dto.add(error);
         });
         return dto;
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<ErroDTO> handleResponseStatusException(ResponseStatusException exception) {
+        Collection<String> mensagens = new ArrayList<>();
+        mensagens.add(exception.getReason());
+        ErroDTO erroDTO = new ErroDTO(mensagens);
+        return ResponseEntity.status(exception.getStatus()).body(erroDTO);
     }
 }

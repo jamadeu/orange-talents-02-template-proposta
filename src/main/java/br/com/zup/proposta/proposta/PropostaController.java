@@ -25,7 +25,7 @@ class PropostaController {
     @PostMapping
     public ResponseEntity<Void> cria(@RequestBody @Valid NovaPropostaRequest novaPropostaRequest, UriComponentsBuilder uriBuilder) {
         if (propostaRepository.findByDocumento(novaPropostaRequest.getDocumento()).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Proposta invalida");
         }
         Proposta proposta = novaPropostaRequest.toModel();
         propostaRepository.save(proposta);

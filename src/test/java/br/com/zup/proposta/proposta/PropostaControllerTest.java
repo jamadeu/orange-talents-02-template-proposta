@@ -404,6 +404,9 @@ class PropostaControllerTest {
         ).andExpect(MockMvcResultMatchers
                 .status()
                 .is(422)
+        ).andExpect(MockMvcResultMatchers
+                .content()
+                .string("{\"mensagens\":[\"Proposta invalida\"]}")
         );
     }
 }
