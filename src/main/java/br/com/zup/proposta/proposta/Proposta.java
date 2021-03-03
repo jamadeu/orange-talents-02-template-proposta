@@ -66,4 +66,8 @@ public class Proposta {
     public String getEmail() {
         return email;
     }
+
+    public String getDocumento() {
+        return documento;
+    }
 }
