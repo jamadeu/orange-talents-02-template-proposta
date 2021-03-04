@@ -1,6 +1,6 @@
 package br.com.zup.proposta.proposta;
 
-import br.com.zup.proposta.compartilhado.anotacoes.CpfOrCnpj;
+import br.com.zup.proposta.compartilhado.anotacoes.CpfOuCnpj;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 public class NovaPropostaRequest {
 
     @NotBlank
-    @CpfOrCnpj
+    @CpfOuCnpj
     @JsonProperty
     private final String documento;
     @NotBlank

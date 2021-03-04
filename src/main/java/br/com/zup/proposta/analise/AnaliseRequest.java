@@ -1,6 +1,6 @@
 package br.com.zup.proposta.analise;
 
-import br.com.zup.proposta.compartilhado.anotacoes.CpfOrCnpj;
+import br.com.zup.proposta.compartilhado.anotacoes.CpfOuCnpj;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotBlank;
@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 public class AnaliseRequest {
 
     @NotBlank
-    @CpfOrCnpj
+    @CpfOuCnpj
     @JsonProperty
     private String documento;
     @NotBlank

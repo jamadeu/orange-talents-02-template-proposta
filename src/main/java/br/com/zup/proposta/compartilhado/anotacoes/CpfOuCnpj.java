@@ -18,7 +18,7 @@ import java.lang.annotation.Target;
 @CPF
 @CNPJ
 @ConstraintComposition(CompositionType.OR)
-public @interface CpfOrCnpj {
+public @interface CpfOuCnpj {
     String message() default "Documento inválido";
 
     Class<?>[] groups() default {};

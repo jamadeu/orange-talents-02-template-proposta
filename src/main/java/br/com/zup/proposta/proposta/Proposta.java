@@ -1,7 +1,7 @@
 package br.com.zup.proposta.proposta;
 
 import br.com.zup.proposta.analise.TipoStatus;
-import br.com.zup.proposta.compartilhado.anotacoes.CpfOrCnpj;
+import br.com.zup.proposta.compartilhado.anotacoes.CpfOuCnpj;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
@@ -19,7 +19,7 @@ public class Proposta {
     private Long id;
 
     @NotBlank
-    @CpfOrCnpj
+    @CpfOuCnpj
     @Column(nullable = false, unique = true)
     @JsonProperty
     private String documento;
