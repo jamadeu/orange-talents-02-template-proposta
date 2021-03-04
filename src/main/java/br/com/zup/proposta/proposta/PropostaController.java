@@ -30,10 +30,10 @@ class PropostaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> buscaPorId(@PathVariable Long id) {
+    public ResponseEntity<PropostaResponse> buscaPorId(@PathVariable Long id) {
         Optional<Proposta> optionalProposta = propostaRepository.findById(id);
         if (optionalProposta.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok(new PropostaResponse(optionalProposta.get()));
     }

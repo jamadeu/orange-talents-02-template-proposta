@@ -410,17 +410,17 @@ class PropostaControllerTest {
                 new BigDecimal(2000));
         propostaRepository.save(novaPropostaRequest.toModel());
 
-        mockMvc.perform(MockMvcRequestBuilders
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
                 .post("/proposta")
                 .content(objectMapper.writeValueAsString(novaPropostaRequest))
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers
                 .status()
                 .is(422)
-        ).andExpect(MockMvcResultMatchers
-                .content()
-                .string("{\"mensagens\":[\"Proposta invalida\"]}")
-        );
+        ).andReturn();
+
+        String errorMessage = mvcResult.getResponse().getErrorMessage();
+        assertEquals(errorMessage, "Proposta invalida");
     }
 
     @Test
