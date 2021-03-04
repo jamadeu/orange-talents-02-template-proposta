@@ -1,7 +1,7 @@
 package br.com.zup.proposta.proposta;
 
+import br.com.zup.proposta.analise.TipoStatus;
 import br.com.zup.proposta.compartilhado.anotacoes.CpfOrCnpj;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
@@ -20,37 +20,39 @@ public class Proposta {
 
     @NotBlank
     @CpfOrCnpj
-    @JsonProperty
     @Column(nullable = false, unique = true)
+    @JsonProperty
     private String documento;
 
     @NotBlank
     @Email
-    @JsonProperty
     @Column(nullable = false)
+    @JsonProperty
     private String email;
 
     @NotBlank
-    @JsonProperty
     @Column(nullable = false)
     private String nome;
 
     @NotBlank
-    @JsonProperty
     @Column(nullable = false)
+    @JsonProperty
     private String endereco;
 
     @NotNull
     @Positive
-    @JsonProperty
     @Column(nullable = false)
+    @JsonProperty
     private BigDecimal salario;
+
+    @Enumerated(EnumType.STRING)
+    @JsonProperty
+    private StatusProposta statusProposta;
 
     @Deprecated
     public Proposta() {
     }
 
-    @JsonCreator
     public Proposta(@NotBlank String documento, @NotBlank @Email String email, @NotBlank String nome, @NotBlank String endereco, @NotNull @Positive BigDecimal salario) {
         this.documento = documento;
         this.email = email;
@@ -69,5 +71,21 @@ public class Proposta {
 
     public String getDocumento() {
         return documento;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public StatusProposta getStatusProposta() {
+        return statusProposta;
+    }
+
+    public void defineStatus(TipoStatus tipoStatus) {
+        if (tipoStatus == TipoStatus.SEM_RESTRICAO) {
+            this.statusProposta = StatusProposta.ELEGIVEL;
+        } else {
+            this.statusProposta = StatusProposta.NAO_ELEGIVEL;
+        }
     }
 }

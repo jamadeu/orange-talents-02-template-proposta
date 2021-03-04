@@ -31,18 +31,25 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class PropostaControllerTest {
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     @Autowired
-    PropostaRepository propostaRepository;
+    private PropostaRepository propostaRepository;
 
     @Test
-    @DisplayName("cria retorna status 201, Header Location preenchido com a URL da nova proposta e a nova proposta com cpf persistida no banco em caso de sucesso.")
-    void cria_Retorna201_EmCasoDeSucessoComCPF() throws Exception {
-        NovaPropostaRequest novaPropostaRequest = NovaPropostaRequestBuilder.criaNovaPropostaRequest();
+    @DisplayName("retorna status 201, Header Location preenchido com a URL da nova proposta e a nova proposta com cpf persistida no banco em caso de sucesso.")
+    void metodoCria_retorna201_EmCasoDeSucessoComCPF() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
+                "041.112.040-90",
+                "email@test.com",
+                "Nome",
+                "Endereço",
+                new BigDecimal(2000)
+        );
+
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
                 .post("/proposta")
                 .content(objectMapper.writeValueAsString(novaPropostaRequest))
@@ -61,9 +68,9 @@ class PropostaControllerTest {
     }
 
     @Test
-    @DisplayName("cria retorna status 201, Header Location preenchido com a URL da nova proposta e a nova proposta com cnpj persistida no banco em caso de sucesso.")
-    void cria_Retorna201_EmCasoDeSucessoComCNPJ() throws Exception {
-        NovaPropostaRequest novaPropostaRequest = NovaPropostaRequestBuilder.criaNovaPropostaRequest(
+    @DisplayName("Retorna status 201, Header Location preenchido com a URL da nova proposta e a nova proposta com cnpj persistida no banco em caso de sucesso.")
+    void metodoCria_Retorna201_EmCasoDeSucessoComCNPJ() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
                 "28.565.312/0001-61",
                 "email@test.com",
                 "Nome",
@@ -88,9 +95,9 @@ class PropostaControllerTest {
     }
 
     @Test
-    @DisplayName("cria retorna status 400 quando o documento é nulo.")
-    void cria_Retorna400_QuandoDocumentoNulo() throws Exception {
-        NovaPropostaRequest novaPropostaRequest = NovaPropostaRequestBuilder.criaNovaPropostaRequest(
+    @DisplayName("Retorna status 400 quando o documento é nulo.")
+    void metodoCria_Retorna400_QuandoDocumentoNulo() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
                 null,
                 "email@test.com",
                 "Nome",
@@ -113,11 +120,11 @@ class PropostaControllerTest {
     }
 
 
-    @DisplayName("cria retorna status 400 quando o documento não é válido.")
+    @DisplayName("Retorna status 400 quando o documento não é válido.")
     @ParameterizedTest
     @ValueSource(strings = {"111.111.111-11", "11.111.111/0001-11"})
-    void cria_Retorna400_QuandoDocumentoNaoValido(String documento) throws Exception {
-        NovaPropostaRequest novaPropostaRequest = NovaPropostaRequestBuilder.criaNovaPropostaRequest(
+    void metodoCria_Retorna400_QuandoDocumentoNaoValido(String documento) throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
                 documento,
                 "email@test.com",
                 "Nome",
@@ -140,9 +147,9 @@ class PropostaControllerTest {
     }
 
     @Test
-    @DisplayName("cria retorna status 400 quando o documento vazio.")
-    void cria_Retorna400_QuandoDocumentoVazio() throws Exception {
-        NovaPropostaRequest novaPropostaRequest = NovaPropostaRequestBuilder.criaNovaPropostaRequest(
+    @DisplayName("Retorna status 400 quando o documento vazio.")
+    void metodoCria_Retorna400_QuandoDocumentoVazio() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
                 "",
                 "email@test.com",
                 "Nome",
@@ -165,9 +172,9 @@ class PropostaControllerTest {
     }
 
     @Test
-    @DisplayName("cria retorna status 400 quando o email é nulo.")
-    void cria_Retorna400_QuandoEmailNulo() throws Exception {
-        NovaPropostaRequest novaPropostaRequest = NovaPropostaRequestBuilder.criaNovaPropostaRequest(
+    @DisplayName("Retorna status 400 quando o email é nulo.")
+    void metodoCria_Retorna400_QuandoEmailNulo() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
                 "041.112.040-90",
                 null,
                 "Nome",
@@ -190,9 +197,9 @@ class PropostaControllerTest {
     }
 
     @Test
-    @DisplayName("cria retorna status 400 quando o email é vazio.")
-    void cria_Retorna400_QuandoEmailVazio() throws Exception {
-        NovaPropostaRequest novaPropostaRequest = NovaPropostaRequestBuilder.criaNovaPropostaRequest(
+    @DisplayName("Retorna status 400 quando o email é vazio.")
+    void metodoCria_Retorna400_QuandoEmailVazio() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
                 "041.112.040-90",
                 "",
                 "Nome",
@@ -215,9 +222,9 @@ class PropostaControllerTest {
     }
 
     @Test
-    @DisplayName("cria retorna status 400 quando o email é invalido.")
-    void cria_Retorna400_QuandoEmailInvalido() throws Exception {
-        NovaPropostaRequest novaPropostaRequest = NovaPropostaRequestBuilder.criaNovaPropostaRequest(
+    @DisplayName("Retorna status 400 quando o email é invalido.")
+    void metodoCria_Retorna400_QuandoEmailInvalido() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
                 "041.112.040-90",
                 "email invalido",
                 "Nome",
@@ -240,9 +247,9 @@ class PropostaControllerTest {
     }
 
     @Test
-    @DisplayName("cria retorna status 400 quando o nome é vazio.")
-    void cria_Retorna400_QuandoNomeVazio() throws Exception {
-        NovaPropostaRequest novaPropostaRequest = NovaPropostaRequestBuilder.criaNovaPropostaRequest(
+    @DisplayName("Retorna status 400 quando o nome é vazio.")
+    void metodoCria_Retorna400_QuandoNomeVazio() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
                 "041.112.040-90",
                 "email@test.com",
                 "",
@@ -265,9 +272,9 @@ class PropostaControllerTest {
     }
 
     @Test
-    @DisplayName("cria retorna status 400 quando o nome é nulo.")
-    void cria_Retorna400_QuandoNomeNulo() throws Exception {
-        NovaPropostaRequest novaPropostaRequest = NovaPropostaRequestBuilder.criaNovaPropostaRequest(
+    @DisplayName("Retorna status 400 quando o nome é nulo.")
+    void metodoCria_Retorna400_QuandoNomeNulo() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
                 "041.112.040-90",
                 "email@test.com",
                 null,
@@ -290,9 +297,9 @@ class PropostaControllerTest {
     }
 
     @Test
-    @DisplayName("cria retorna status 400 quando o endereco é vazio.")
-    void cria_Retorna400_QuandoEnderecoVazio() throws Exception {
-        NovaPropostaRequest novaPropostaRequest = NovaPropostaRequestBuilder.criaNovaPropostaRequest(
+    @DisplayName("Retorna status 400 quando o endereco é vazio.")
+    void metodoCria_Retorna400_QuandoEnderecoVazio() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
                 "041.112.040-90",
                 "email@test.com",
                 "Nome",
@@ -315,9 +322,9 @@ class PropostaControllerTest {
     }
 
     @Test
-    @DisplayName("cria retorna status 400 quando o endereco é nulo.")
-    void cria_Retorna400_QuandoEnderecoNulo() throws Exception {
-        NovaPropostaRequest novaPropostaRequest = NovaPropostaRequestBuilder.criaNovaPropostaRequest(
+    @DisplayName("Retorna status 400 quando o endereco é nulo.")
+    void metodoCria_Retorna400_QuandoEnderecoNulo() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
                 "041.112.040-90",
                 "email@test.com",
                 "Nome",
@@ -340,9 +347,9 @@ class PropostaControllerTest {
     }
 
     @Test
-    @DisplayName("cria retorna status 400 quando o salario é nulo.")
-    void cria_Retorna400_QuandoSalarioNulo() throws Exception {
-        NovaPropostaRequest novaPropostaRequest = NovaPropostaRequestBuilder.criaNovaPropostaRequest(
+    @DisplayName("Retorna status 400 quando o salario é nulo.")
+    void metodoCria_Retorna400_QuandoSalarioNulo() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
                 "041.112.040-90",
                 "email@test.com",
                 "Nome",
@@ -365,11 +372,11 @@ class PropostaControllerTest {
     }
 
 
-    @DisplayName("cria retorna status 400 quando o salario é zero ou negativo.")
+    @DisplayName("Retorna status 400 quando o salario é zero ou negativo.")
     @ParameterizedTest
     @ValueSource(ints = {0, -1, -10})
-    void cria_Retorna400_QuandoSalarioZeroOuNegativo(int salario) throws Exception {
-        NovaPropostaRequest novaPropostaRequest = NovaPropostaRequestBuilder.criaNovaPropostaRequest(
+    void metodoCria_Retorna400_QuandoSalarioZeroOuNegativo(int salario) throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
                 "041.112.040-90",
                 "email@test.com",
                 "Nome",
@@ -392,9 +399,14 @@ class PropostaControllerTest {
     }
 
     @Test
-    @DisplayName("cria retorna status 422 quando o solicitante ja possui uma proposta.")
-    void cria_Retorna422_QuandoSolicitanteJaPossuiProposta() throws Exception {
-        NovaPropostaRequest novaPropostaRequest = NovaPropostaRequestBuilder.criaNovaPropostaRequest();
+    @DisplayName("Retorna status 422 quando o solicitante ja possui uma proposta.")
+    void metodoCria_Retorna422_QuandoSolicitanteJaPossuiProposta() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
+                "041.112.040-90",
+                "email@test.com",
+                "Nome",
+                "Endereço",
+                new BigDecimal(2000));
         propostaRepository.save(novaPropostaRequest.toModel());
 
         mockMvc.perform(MockMvcRequestBuilders
@@ -408,5 +420,30 @@ class PropostaControllerTest {
                 .content()
                 .string("{\"mensagens\":[\"Proposta invalida\"]}")
         );
+    }
+
+    @Test
+    @DisplayName("Quando a analise retornar 'SEM_RESTRICAO' o status da proposta deve ser 'ELEGIVEL'")
+    void metodoCria_StatusPropostaElegivel_QuandoClienteNaoPossuirRestricao() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
+                "041.112.040-90",
+                "email@test.com",
+                "Nome",
+                "Endereço",
+                new BigDecimal(2000));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/proposta")
+                .content(objectMapper.writeValueAsString(novaPropostaRequest))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .is(201)
+        ).andReturn();
+
+        Proposta proposta = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento()).orElseThrow();
+
+        assertEquals(proposta.getEmail(), novaPropostaRequest.getEmail());
+        assertEquals(proposta.getStatusProposta(), StatusProposta.ELEGIVEL);
     }
 }
