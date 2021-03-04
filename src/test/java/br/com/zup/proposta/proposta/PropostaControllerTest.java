@@ -19,6 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.math.BigDecimal;
 import java.util.Optional;
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -445,5 +446,47 @@ class PropostaControllerTest {
 
         assertEquals(proposta.getEmail(), novaPropostaRequest.getEmail());
         assertEquals(proposta.getStatusProposta(), StatusProposta.ELEGIVEL);
+    }
+
+    @Test
+    @DisplayName("Retorna status 200 e um Json com os dados da proposta")
+    void metodoBuscaPorId_Retorna200() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
+                "041.112.040-90",
+                "email@test.com",
+                "Nome",
+                "Endereco",
+                new BigDecimal(2000));
+        Proposta proposta = propostaRepository.save(novaPropostaRequest.toModel());
+
+        String expectedBody = "{\"documento\":\"041.112.040-90\"," +
+                "\"email\":\"email@test.com\"," +
+                "\"nome\":\"Nome\"," +
+                "\"endereco\":\"Endereco\"," +
+                "\"salario\":\"2000.00\"," +
+                "\"status\":\"null\"}";
+
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                .get("/proposta/" + proposta.getId())
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .isOk()
+        ).andReturn();
+
+        String body = mvcResult.getResponse().getContentAsString();
+        assertEquals(body, expectedBody);
+    }
+
+
+    @Test
+    @DisplayName("Retorna status 400 quando a proposta não existe")
+    void metodoBuscaPorId_Retorna400() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/proposta/" + new Random().nextLong())
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .is(404)
+        );
     }
 }

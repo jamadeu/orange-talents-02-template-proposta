@@ -81,6 +81,14 @@ public class Proposta {
         return statusProposta;
     }
 
+    public String getEndereco() {
+        return endereco;
+    }
+
+    public BigDecimal getSalario() {
+        return salario;
+    }
+
     public void defineStatus(TipoStatus tipoStatus) {
         if (tipoStatus == TipoStatus.SEM_RESTRICAO) {
             this.statusProposta = StatusProposta.ELEGIVEL;

@@ -7,15 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/proposta")
@@ -29,6 +27,15 @@ class PropostaController {
     public PropostaController(PropostaRepository propostaRepository, AnaliseCliente analiseCliente) {
         this.propostaRepository = propostaRepository;
         this.analiseCliente = analiseCliente;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> buscaPorId(@PathVariable Long id) {
+        Optional<Proposta> optionalProposta = propostaRepository.findById(id);
+        if (optionalProposta.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(new PropostaResponse(optionalProposta.get()));
     }
 
     @PostMapping
