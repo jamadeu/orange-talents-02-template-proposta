@@ -10,17 +10,29 @@ public class AnaliseRequest {
     @NotBlank
     @CpfOuCnpj
     @JsonProperty
-    private String documento;
+    private final String documento;
     @NotBlank
     @JsonProperty
-    private String nome;
+    private final String nome;
     @NotBlank
     @JsonProperty
-    private String idProposta;
+    private final String idProposta;
 
     public AnaliseRequest(@NotBlank String documento, @NotBlank String nome, @NotBlank String idProposta) {
         this.documento = documento;
         this.nome = nome;
         this.idProposta = idProposta;
+    }
+
+    public String getDocumento() {
+        return documento;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getIdProposta() {
+        return idProposta;
     }
 }

@@ -1,5 +1,7 @@
 package br.com.zup.proposta.proposta;
 
+import br.com.zup.proposta.PropostaApplication;
+import br.com.zup.proposta.analise.AnaliseCliente;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.math.BigDecimal;
@@ -24,7 +27,9 @@ import java.util.Random;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
+@SpringBootTest(
+        webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
+        properties = {"API_ANALISE=http://localhost:8080/analise-fake"})
 @AutoConfigureTestDatabase
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -446,6 +451,31 @@ class PropostaControllerTest {
 
         assertEquals(proposta.getEmail(), novaPropostaRequest.getEmail());
         assertEquals(proposta.getStatusProposta(), StatusProposta.ELEGIVEL);
+    }
+
+    @Test
+    @DisplayName("Quando a analise retornar 'COM_RESTRICAO' o status da proposta deve ser 'NAO_ELEGIVEL'")
+    void metodoCria_StatusPropostaNaoElegivel_QuandoClientePossuirRestricao() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
+                "308.706.540-47",
+                "email@test.com",
+                "Nome",
+                "Endereço",
+                new BigDecimal(2000));
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/proposta")
+                .content(objectMapper.writeValueAsString(novaPropostaRequest))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .is(201)
+        ).andReturn();
+
+        Proposta proposta = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento()).orElseThrow();
+
+        assertEquals(proposta.getEmail(), novaPropostaRequest.getEmail());
+        assertEquals(proposta.getStatusProposta(), StatusProposta.NAO_ELEGIVEL);
     }
 
     @Test

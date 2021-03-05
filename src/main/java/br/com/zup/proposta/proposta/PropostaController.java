@@ -3,6 +3,9 @@ package br.com.zup.proposta.proposta;
 import br.com.zup.proposta.analise.AnaliseCliente;
 import br.com.zup.proposta.analise.AnaliseRequest;
 import br.com.zup.proposta.analise.AnaliseResponse;
+import br.com.zup.proposta.analise.TipoStatus;
+import feign.FeignException.UnprocessableEntity;
+import org.apache.tomcat.util.json.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -39,7 +42,7 @@ class PropostaController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> cria(@RequestBody @Valid NovaPropostaRequest novaPropostaRequest, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<Void> cria(@RequestBody @Valid NovaPropostaRequest novaPropostaRequest, UriComponentsBuilder uriBuilder) throws ParseException {
         if (propostaRepository.findByDocumento(novaPropostaRequest.getDocumento()).isPresent()) {
             logger.error("Proposta invalida, ja existe uma proposta para o documento={}", novaPropostaRequest.getDocumento());
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Proposta invalida");
@@ -48,8 +51,15 @@ class PropostaController {
         logger.info("NovaPropostaRequest para Proposta ok");
         propostaRepository.save(proposta);
         logger.info("Proposta documento={} criada com sucesso.", proposta.getDocumento());
-        AnaliseResponse analiseResponse = analiseCliente.analise(
-                new AnaliseRequest(proposta.getDocumento(), proposta.getNome(), String.valueOf(proposta.getId())));
+        AnaliseResponse analiseResponse;
+        try {
+            analiseResponse = analiseCliente.analise(
+                    new AnaliseRequest(proposta.getDocumento(), proposta.getNome(), String.valueOf(proposta.getId())));
+        } catch (UnprocessableEntity e) {
+            logger.info("Status code da analise {}", e.status());
+            logger.info(e.contentUTF8());
+            analiseResponse = new AnaliseResponse(TipoStatus.COM_RESTRICAO);
+        }
         logger.info("Resultado da analise, cliente {}.", analiseResponse.getResultadoSolicitacao());
         proposta.defineStatus(analiseResponse.getResultadoSolicitacao());
         propostaRepository.save(proposta);
