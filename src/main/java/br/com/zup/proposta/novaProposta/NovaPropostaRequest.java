@@ -1,4 +1,4 @@
-package br.com.zup.proposta.proposta;
+package br.com.zup.proposta.novaProposta;
 
 import br.com.zup.proposta.compartilhado.anotacoes.CpfOuCnpj;
 import com.fasterxml.jackson.annotation.JsonCreator;

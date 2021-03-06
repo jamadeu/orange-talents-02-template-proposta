@@ -1,4 +1,4 @@
-package br.com.zup.proposta.proposta;
+package br.com.zup.proposta.novaProposta;
 
 import br.com.zup.proposta.analise.TipoStatus;
 import br.com.zup.proposta.compartilhado.anotacoes.CpfOuCnpj;

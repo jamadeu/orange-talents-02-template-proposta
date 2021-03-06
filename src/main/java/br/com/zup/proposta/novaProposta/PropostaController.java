@@ -1,4 +1,4 @@
-package br.com.zup.proposta.proposta;
+package br.com.zup.proposta.novaProposta;
 
 import br.com.zup.proposta.analise.AnaliseCliente;
 import br.com.zup.proposta.analise.AnaliseRequest;
@@ -8,10 +8,8 @@ import feign.FeignException.UnprocessableEntity;
 import org.apache.tomcat.util.json.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
@@ -19,7 +17,7 @@ import java.net.URI;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/proposta")
+@RequestMapping("/api/proposta")
 class PropostaController {
 
     final Logger logger = LoggerFactory.getLogger(PropostaController.class);
@@ -36,16 +34,16 @@ class PropostaController {
     public ResponseEntity<PropostaResponse> buscaPorId(@PathVariable Long id) {
         Optional<Proposta> optionalProposta = propostaRepository.findById(id);
         if (optionalProposta.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(new PropostaResponse(optionalProposta.get()));
     }
 
     @PostMapping
-    public ResponseEntity<Void> cria(@RequestBody @Valid NovaPropostaRequest novaPropostaRequest, UriComponentsBuilder uriBuilder) throws ParseException {
-        if (propostaRepository.findByDocumento(novaPropostaRequest.getDocumento()).isPresent()) {
+    public ResponseEntity<?> cria(@RequestBody @Valid NovaPropostaRequest novaPropostaRequest, UriComponentsBuilder uriBuilder) {
+        if (propostaRepository.existsByDocumento(novaPropostaRequest.getDocumento())) {
             logger.error("Proposta invalida, ja existe uma proposta para o documento={}", novaPropostaRequest.getDocumento());
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Proposta invalida");
+            return ResponseEntity.unprocessableEntity().body("Proposta invalida, ja existe uma proposta para este cliente");
         }
         Proposta proposta = novaPropostaRequest.toModel();
         logger.info("NovaPropostaRequest para Proposta ok");
