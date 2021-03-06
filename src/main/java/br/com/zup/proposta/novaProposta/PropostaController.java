@@ -5,7 +5,6 @@ import br.com.zup.proposta.analise.AnaliseRequest;
 import br.com.zup.proposta.analise.AnaliseResponse;
 import br.com.zup.proposta.analise.TipoStatus;
 import feign.FeignException.UnprocessableEntity;
-import org.apache.tomcat.util.json.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -59,7 +58,7 @@ class PropostaController {
             analiseResponse = new AnaliseResponse(TipoStatus.COM_RESTRICAO);
         }
         logger.info("Resultado da analise, cliente {}.", analiseResponse.getResultadoSolicitacao());
-        proposta.defineStatus(analiseResponse.getResultadoSolicitacao());
+        proposta.alteraStatus(analiseResponse.getResultadoSolicitacao());
         propostaRepository.save(proposta);
         logger.info("Proposta {}.", proposta.getStatusProposta());
         URI uri = uriBuilder.path("/proposta/{id}").buildAndExpand(proposta.getId()).toUri();

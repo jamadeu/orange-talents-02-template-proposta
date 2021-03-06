@@ -2,21 +2,20 @@ package br.com.zup.proposta.novaProposta;
 
 public class PropostaResponse {
 
+    private final String documento;
+    private final String email;
+    private final String nome;
+    private final Endereco endereco;
+    private final String salario;
+    private final String status;
 
-    private String documento;
-    private String email;
-    private String nome;
-    private Endereco endereco;
-    private String salario;
-    private String status;
-
-    public PropostaResponse(String documento, String email, String nome, Endereco endereco, String salario, String status) {
-        this.documento = documento;
-        this.email = email;
-        this.nome = nome;
-        this.endereco = endereco;
-        this.salario = salario;
-        this.status = status;
+    public PropostaResponse(Proposta proposta) {
+        this.documento = proposta.getDocumento();
+        this.email = proposta.getEmail();
+        this.nome = proposta.getNome();
+        this.endereco = proposta.getEndereco();
+        this.salario = proposta.getSalario().toString();
+        this.status = String.valueOf(proposta.getStatusProposta());
     }
 
     public String getDocumento() {
