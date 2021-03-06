@@ -31,7 +31,7 @@ public class Proposta {
     @Column(nullable = false)
     private String nome;
 
-    @NotBlank
+    @NotNull
     @Embedded
     @Column(nullable = false)
     private Endereco endereco;
@@ -48,7 +48,7 @@ public class Proposta {
     public Proposta() {
     }
 
-    public Proposta(@NotBlank String documento, @NotBlank @Email String email, @NotBlank String nome, @NotBlank Endereco endereco, @NotNull @Positive BigDecimal salario) {
+    public Proposta(@NotBlank String documento, @NotBlank @Email String email, @NotBlank String nome, @NotNull Endereco endereco, @NotNull @Positive BigDecimal salario) {
         this.documento = documento;
         this.email = email;
         this.nome = nome;

@@ -18,13 +18,13 @@ public class NovaPropostaRequest {
     private final String email;
     @NotBlank
     private final String nome;
-    @NotBlank
+    @NotNull
     private final EnderecoRequest enderecoRequest;
     @NotNull
     @Positive
     private final BigDecimal salario;
 
-    public NovaPropostaRequest(@NotBlank String documento, @NotBlank @Email String email, @NotBlank String nome, EnderecoRequest enderecoRequest, @NotNull @Positive BigDecimal salario) {
+    public NovaPropostaRequest(@NotBlank String documento, @NotBlank @Email String email, @NotBlank String nome, @NotNull EnderecoRequest enderecoRequest, @NotNull @Positive BigDecimal salario) {
         this.documento = documento;
         this.email = email;
         this.nome = nome;

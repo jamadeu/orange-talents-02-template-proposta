@@ -61,7 +61,7 @@ class PropostaController {
         proposta.alteraStatus(analiseResponse.getResultadoSolicitacao());
         propostaRepository.save(proposta);
         logger.info("Proposta {}.", proposta.getStatusProposta());
-        URI uri = uriBuilder.path("/proposta/{id}").buildAndExpand(proposta.getId()).toUri();
+        URI uri = uriBuilder.path("/api/proposta/{id}").port(8080).buildAndExpand(proposta.getId()).toUri();
         return ResponseEntity.created(uri).build();
     }
 }

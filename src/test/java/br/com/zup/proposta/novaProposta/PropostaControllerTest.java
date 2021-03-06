@@ -33,6 +33,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ActiveProfiles("test")
 class PropostaControllerTest {
 
+    private final String URL_API_PROPOSTA = "/api/proposta";
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -49,12 +51,18 @@ class PropostaControllerTest {
                 "041.112.040-90",
                 "email@test.com",
                 "Nome",
-                "Endereço",
+                new EnderecoRequest(
+                        "Rua",
+                        "100",
+                        "Bairro",
+                        "Cidade",
+                        "Estado",
+                        "cep"),
                 new BigDecimal(2000)
         );
 
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                .post("/proposta")
+                .post(URL_API_PROPOSTA)
                 .content(objectMapper.writeValueAsString(novaPropostaRequest))
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers
@@ -63,7 +71,7 @@ class PropostaControllerTest {
         ).andReturn();
 
         Proposta proposta = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento()).orElseThrow();
-        String locationEsperado = "http://localhost/proposta/" + proposta.getId();
+        String locationEsperado = "http://localhost:8080" + URL_API_PROPOSTA + "/" + proposta.getId();
         String location = mvcResult.getResponse().getHeader("Location");
 
         assertEquals(locationEsperado, location);
@@ -77,11 +85,17 @@ class PropostaControllerTest {
                 "28.565.312/0001-61",
                 "email@test.com",
                 "Nome",
-                "Endereço",
+                new EnderecoRequest(
+                        "Rua",
+                        "100",
+                        "Bairro",
+                        "Cidade",
+                        "Estado",
+                        "cep"),
                 new BigDecimal(2000)
         );
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                .post("/proposta")
+                .post(URL_API_PROPOSTA)
                 .content(objectMapper.writeValueAsString(novaPropostaRequest))
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers
@@ -90,7 +104,7 @@ class PropostaControllerTest {
         ).andReturn();
 
         Proposta proposta = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento()).orElseThrow();
-        String locationEsperado = "http://localhost/proposta/" + proposta.getId();
+        String locationEsperado = "http://localhost:8080" + URL_API_PROPOSTA + "/" + proposta.getId();
         String location = mvcResult.getResponse().getHeader("Location");
 
         assertEquals(locationEsperado, location);
@@ -104,12 +118,18 @@ class PropostaControllerTest {
                 null,
                 "email@test.com",
                 "Nome",
-                "Endereço",
+                new EnderecoRequest(
+                        "Rua",
+                        "100",
+                        "Bairro",
+                        "Cidade",
+                        "Estado",
+                        "cep"),
                 new BigDecimal(2000)
         );
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/proposta")
+                .post(URL_API_PROPOSTA)
                 .content(objectMapper.writeValueAsString(novaPropostaRequest))
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers
@@ -131,12 +151,18 @@ class PropostaControllerTest {
                 documento,
                 "email@test.com",
                 "Nome",
-                "Endereço",
+                new EnderecoRequest(
+                        "Rua",
+                        "100",
+                        "Bairro",
+                        "Cidade",
+                        "Estado",
+                        "cep"),
                 new BigDecimal(2000)
         );
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/proposta")
+                .post(URL_API_PROPOSTA)
                 .content(objectMapper.writeValueAsString(novaPropostaRequest))
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers
@@ -156,12 +182,18 @@ class PropostaControllerTest {
                 "",
                 "email@test.com",
                 "Nome",
-                "Endereço",
+                new EnderecoRequest(
+                        "Rua",
+                        "100",
+                        "Bairro",
+                        "Cidade",
+                        "Estado",
+                        "cep"),
                 new BigDecimal(2000)
         );
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/proposta")
+                .post(URL_API_PROPOSTA)
                 .content(objectMapper.writeValueAsString(novaPropostaRequest))
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers
@@ -181,12 +213,18 @@ class PropostaControllerTest {
                 "041.112.040-90",
                 null,
                 "Nome",
-                "Endereço",
+                new EnderecoRequest(
+                        "Rua",
+                        "100",
+                        "Bairro",
+                        "Cidade",
+                        "Estado",
+                        "cep"),
                 new BigDecimal(2000)
         );
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/proposta")
+                .post(URL_API_PROPOSTA)
                 .content(objectMapper.writeValueAsString(novaPropostaRequest))
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers
@@ -206,12 +244,18 @@ class PropostaControllerTest {
                 "041.112.040-90",
                 "",
                 "Nome",
-                "Endereço",
+                new EnderecoRequest(
+                        "Rua",
+                        "100",
+                        "Bairro",
+                        "Cidade",
+                        "Estado",
+                        "cep"),
                 new BigDecimal(2000)
         );
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/proposta")
+                .post(URL_API_PROPOSTA)
                 .content(objectMapper.writeValueAsString(novaPropostaRequest))
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers
@@ -231,12 +275,18 @@ class PropostaControllerTest {
                 "041.112.040-90",
                 "email invalido",
                 "Nome",
-                "Endereço",
+                new EnderecoRequest(
+                        "Rua",
+                        "100",
+                        "Bairro",
+                        "Cidade",
+                        "Estado",
+                        "cep"),
                 new BigDecimal(2000)
         );
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/proposta")
+                .post(URL_API_PROPOSTA)
                 .content(objectMapper.writeValueAsString(novaPropostaRequest))
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers
@@ -256,12 +306,18 @@ class PropostaControllerTest {
                 "041.112.040-90",
                 "email@test.com",
                 "",
-                "Endereço",
+                new EnderecoRequest(
+                        "Rua",
+                        "100",
+                        "Bairro",
+                        "Cidade",
+                        "Estado",
+                        "cep"),
                 new BigDecimal(2000)
         );
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/proposta")
+                .post(URL_API_PROPOSTA)
                 .content(objectMapper.writeValueAsString(novaPropostaRequest))
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers
@@ -281,37 +337,18 @@ class PropostaControllerTest {
                 "041.112.040-90",
                 "email@test.com",
                 null,
-                "Endereço",
+                new EnderecoRequest(
+                        "Rua",
+                        "100",
+                        "Bairro",
+                        "Cidade",
+                        "Estado",
+                        "cep"),
                 new BigDecimal(2000)
         );
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/proposta")
-                .content(objectMapper.writeValueAsString(novaPropostaRequest))
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers
-                .status()
-                .isBadRequest()
-        );
-
-        Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
-
-        assertTrue(propostaOptional.isEmpty());
-    }
-
-    @Test
-    @DisplayName("Retorna status 400 quando o endereco é vazio.")
-    void metodoCria_Retorna400_QuandoEnderecoVazio() throws Exception {
-        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
-                "041.112.040-90",
-                "email@test.com",
-                "Nome",
-                "",
-                new BigDecimal(2000)
-        );
-
-        mockMvc.perform(MockMvcRequestBuilders
-                .post("/proposta")
+                .post(URL_API_PROPOSTA)
                 .content(objectMapper.writeValueAsString(novaPropostaRequest))
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers
@@ -336,7 +373,7 @@ class PropostaControllerTest {
         );
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/proposta")
+                .post(URL_API_PROPOSTA)
                 .content(objectMapper.writeValueAsString(novaPropostaRequest))
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers
@@ -356,12 +393,18 @@ class PropostaControllerTest {
                 "041.112.040-90",
                 "email@test.com",
                 "Nome",
-                "Endereço",
+                new EnderecoRequest(
+                        "Rua",
+                        "100",
+                        "Bairro",
+                        "Cidade",
+                        "Estado",
+                        "cep"),
                 null
         );
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/proposta")
+                .post(URL_API_PROPOSTA)
                 .content(objectMapper.writeValueAsString(novaPropostaRequest))
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers
@@ -375,20 +418,26 @@ class PropostaControllerTest {
     }
 
 
-    @DisplayName("Retorna status 400 quando o salario é zero ou negativo.")
+    @DisplayName("Retorna status 400 quando o salario é negativo.")
     @ParameterizedTest
-    @ValueSource(ints = {0, -1, -10})
+    @ValueSource(ints = {-1, -10})
     void metodoCria_Retorna400_QuandoSalarioZeroOuNegativo(int salario) throws Exception {
         NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
                 "041.112.040-90",
                 "email@test.com",
                 "Nome",
-                "Endereço",
+                new EnderecoRequest(
+                        "Rua",
+                        "100",
+                        "Bairro",
+                        "Cidade",
+                        "Estado",
+                        "cep"),
                 new BigDecimal(salario)
         );
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/proposta")
+                .post(URL_API_PROPOSTA)
                 .content(objectMapper.writeValueAsString(novaPropostaRequest))
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers
@@ -408,12 +457,19 @@ class PropostaControllerTest {
                 "041.112.040-90",
                 "email@test.com",
                 "Nome",
-                "Endereço",
-                new BigDecimal(2000));
+                new EnderecoRequest(
+                        "Rua",
+                        "100",
+                        "Bairro",
+                        "Cidade",
+                        "Estado",
+                        "cep"),
+                new BigDecimal(2000)
+        );
         propostaRepository.save(novaPropostaRequest.toModel());
 
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                .post("/proposta")
+                .post(URL_API_PROPOSTA)
                 .content(objectMapper.writeValueAsString(novaPropostaRequest))
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers
@@ -421,8 +477,8 @@ class PropostaControllerTest {
                 .is(422)
         ).andReturn();
 
-        String errorMessage = mvcResult.getResponse().getErrorMessage();
-        assertEquals(errorMessage, "Proposta invalida");
+        String errorMessage = mvcResult.getResponse().getContentAsString();
+        assertEquals(errorMessage, "Proposta invalida, ja existe uma proposta para este cliente");
     }
 
     @Test
@@ -432,11 +488,18 @@ class PropostaControllerTest {
                 "041.112.040-90",
                 "email@test.com",
                 "Nome",
-                "Endereço",
-                new BigDecimal(2000));
+                new EnderecoRequest(
+                        "Rua",
+                        "100",
+                        "Bairro",
+                        "Cidade",
+                        "Estado",
+                        "cep"),
+                new BigDecimal(2000)
+        );
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/proposta")
+                .post(URL_API_PROPOSTA)
                 .content(objectMapper.writeValueAsString(novaPropostaRequest))
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers
@@ -454,14 +517,21 @@ class PropostaControllerTest {
     @DisplayName("Quando a analise retornar 'COM_RESTRICAO' o status da proposta deve ser 'NAO_ELEGIVEL'")
     void metodoCria_StatusPropostaNaoElegivel_QuandoClientePossuirRestricao() throws Exception {
         NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
-                "308.706.540-47",
+                "366.112.150-26",
                 "email@test.com",
                 "Nome",
-                "Endereço",
-                new BigDecimal(2000));
+                new EnderecoRequest(
+                        "Rua",
+                        "100",
+                        "Bairro",
+                        "Cidade",
+                        "Estado",
+                        "cep"),
+                new BigDecimal(2000)
+        );
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/proposta")
+                .post(URL_API_PROPOSTA)
                 .content(objectMapper.writeValueAsString(novaPropostaRequest))
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers
@@ -482,35 +552,41 @@ class PropostaControllerTest {
                 "041.112.040-90",
                 "email@test.com",
                 "Nome",
-                "Endereco",
-                new BigDecimal(2000));
+                new EnderecoRequest(
+                        "Rua",
+                        "100",
+                        "Bairro",
+                        "Cidade",
+                        "Estado",
+                        "cep"),
+                new BigDecimal(2000)
+        );
         Proposta proposta = propostaRepository.save(novaPropostaRequest.toModel());
 
         String expectedBody = "{\"documento\":\"041.112.040-90\"," +
                 "\"email\":\"email@test.com\"," +
                 "\"nome\":\"Nome\"," +
-                "\"endereco\":\"Endereco\"," +
+                "\"endereco\":{\"logradouro\":\"Rua\",\"numero\":\"100\",\"bairro\":\"Bairro\",\"cidade\":\"Cidade\",\"estado\":\"Estado\",\"cep\":\"cep\"}," +
                 "\"salario\":\"2000.00\"," +
                 "\"status\":\"null\"}";
 
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                .get("/proposta/" + proposta.getId())
+                .get(URL_API_PROPOSTA + "/" + proposta.getId())
         ).andExpect(MockMvcResultMatchers
                 .status()
                 .isOk()
         ).andReturn();
 
         String body = mvcResult.getResponse().getContentAsString();
-        assertEquals(body, expectedBody);
+        assertEquals(expectedBody, body);
     }
-
 
     @Test
     @DisplayName("Retorna status 400 quando a proposta não existe")
     void metodoBuscaPorId_Retorna400() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders
-                .get("/proposta/" + new Random().nextLong())
+                .get(URL_API_PROPOSTA + new Random().nextLong())
         ).andExpect(MockMvcResultMatchers
                 .status()
                 .is(404)
