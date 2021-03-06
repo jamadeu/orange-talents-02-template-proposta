@@ -1,5 +1,7 @@
 package br.com.zup.proposta.novaProposta;
 
+import org.springframework.validation.annotation.Validated;
+
 import javax.validation.constraints.NotBlank;
 
 public class EnderecoRequest {

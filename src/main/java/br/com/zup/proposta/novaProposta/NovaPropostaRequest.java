@@ -2,6 +2,7 @@ package br.com.zup.proposta.novaProposta;
 
 import br.com.zup.proposta.compartilhado.anotacoes.CpfOuCnpj;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -19,12 +20,13 @@ public class NovaPropostaRequest {
     @NotBlank
     private final String nome;
     @NotNull
+    @Valid
     private final EnderecoRequest enderecoRequest;
     @NotNull
     @Positive
     private final BigDecimal salario;
 
-    public NovaPropostaRequest(@NotBlank String documento, @NotBlank @Email String email, @NotBlank String nome, @NotNull EnderecoRequest enderecoRequest, @NotNull @Positive BigDecimal salario) {
+    public NovaPropostaRequest(@NotBlank String documento, @NotBlank @Email String email, @NotBlank String nome, @NotNull @Valid EnderecoRequest enderecoRequest, @NotNull @Positive BigDecimal salario) {
         this.documento = documento;
         this.email = email;
         this.nome = nome;

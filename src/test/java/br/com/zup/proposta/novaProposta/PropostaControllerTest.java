@@ -566,7 +566,12 @@ class PropostaControllerTest {
         String expectedBody = "{\"documento\":\"041.112.040-90\"," +
                 "\"email\":\"email@test.com\"," +
                 "\"nome\":\"Nome\"," +
-                "\"endereco\":{\"logradouro\":\"Rua\",\"numero\":\"100\",\"bairro\":\"Bairro\",\"cidade\":\"Cidade\",\"estado\":\"Estado\",\"cep\":\"cep\"}," +
+                "\"endereco\":{\"logradouro\":\"Rua\"," +
+                "\"numero\":\"100\"," +
+                "\"bairro\":\"Bairro\"," +
+                "\"cidade\":\"Cidade\"," +
+                "\"estado\":\"Estado\"," +
+                "\"cep\":\"cep\"}," +
                 "\"salario\":\"2000.00\"," +
                 "\"status\":\"null\"}";
 
@@ -591,5 +596,377 @@ class PropostaControllerTest {
                 .status()
                 .is(404)
         );
+    }
+
+    @Test
+    @DisplayName("Retorna status 400 quando a logradouro for nulo.")
+    void metodoCria_Retorna400_QuandoLogradouroNulo() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
+                "041.112.040-90",
+                "email@test.com",
+                "Nome",
+                new EnderecoRequest(
+                        null,
+                        "100",
+                        "Bairro",
+                        "Cidade",
+                        "Estado",
+                        "cep"),
+                new BigDecimal(2000)
+        );
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post(URL_API_PROPOSTA)
+                .content(objectMapper.writeValueAsString(novaPropostaRequest))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .isBadRequest()
+        );
+
+        Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
+
+        assertTrue(propostaOptional.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Retorna status 400 quando a logradouro for vazio.")
+    void metodoCria_Retorna400_QuandoLogradouroVazio() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
+                "041.112.040-90",
+                "email@test.com",
+                "Nome",
+                new EnderecoRequest(
+                        "",
+                        "100",
+                        "Bairro",
+                        "Cidade",
+                        "Estado",
+                        "cep"),
+                new BigDecimal(2000)
+        );
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post(URL_API_PROPOSTA)
+                .content(objectMapper.writeValueAsString(novaPropostaRequest))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .isBadRequest()
+        );
+
+        Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
+
+        assertTrue(propostaOptional.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Retorna status 400 quando a numero for nulo.")
+    void metodoCria_Retorna400_QuandoNumeroNulo() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
+                "041.112.040-90",
+                "email@test.com",
+                "Nome",
+                new EnderecoRequest(
+                        "Rua",
+                        null,
+                        "Bairro",
+                        "Cidade",
+                        "Estado",
+                        "cep"),
+                new BigDecimal(2000)
+        );
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post(URL_API_PROPOSTA)
+                .content(objectMapper.writeValueAsString(novaPropostaRequest))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .isBadRequest()
+        );
+
+        Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
+
+        assertTrue(propostaOptional.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Retorna status 400 quando a numero for vazio.")
+    void metodoCria_Retorna400_QuandoNumeroVazio() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
+                "041.112.040-90",
+                "email@test.com",
+                "Nome",
+                new EnderecoRequest(
+                        "Rua",
+                        "",
+                        "Bairro",
+                        "Cidade",
+                        "Estado",
+                        "cep"),
+                new BigDecimal(2000)
+        );
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post(URL_API_PROPOSTA)
+                .content(objectMapper.writeValueAsString(novaPropostaRequest))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .isBadRequest()
+        );
+
+        Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
+
+        assertTrue(propostaOptional.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Retorna status 400 quando a bairro for nulo.")
+    void metodoCria_Retorna400_QuandoBairroNulo() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
+                "041.112.040-90",
+                "email@test.com",
+                "Nome",
+                new EnderecoRequest(
+                        "Rua",
+                        "100",
+                        null,
+                        "Cidade",
+                        "Estado",
+                        "cep"),
+                new BigDecimal(2000)
+        );
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post(URL_API_PROPOSTA)
+                .content(objectMapper.writeValueAsString(novaPropostaRequest))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .isBadRequest()
+        );
+
+        Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
+
+        assertTrue(propostaOptional.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Retorna status 400 quando a bairro for vazio.")
+    void metodoCria_Retorna400_QuandoBairroVazio() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
+                "041.112.040-90",
+                "email@test.com",
+                "Nome",
+                new EnderecoRequest(
+                        "Rua",
+                        "100",
+                        "",
+                        "Cidade",
+                        "Estado",
+                        "cep"),
+                new BigDecimal(2000)
+        );
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post(URL_API_PROPOSTA)
+                .content(objectMapper.writeValueAsString(novaPropostaRequest))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .isBadRequest()
+        );
+
+        Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
+
+        assertTrue(propostaOptional.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Retorna status 400 quando a cidade for nulo.")
+    void metodoCria_Retorna400_QuandoCidadeNulo() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
+                "041.112.040-90",
+                "email@test.com",
+                "Nome",
+                new EnderecoRequest(
+                        "Rua",
+                        "100",
+                        "Bairro",
+                        null,
+                        "Estado",
+                        "cep"),
+                new BigDecimal(2000)
+        );
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post(URL_API_PROPOSTA)
+                .content(objectMapper.writeValueAsString(novaPropostaRequest))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .isBadRequest()
+        );
+
+        Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
+
+        assertTrue(propostaOptional.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Retorna status 400 quando a cidade for vazio.")
+    void metodoCria_Retorna400_QuandoCidadeVazio() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
+                "041.112.040-90",
+                "email@test.com",
+                "Nome",
+                new EnderecoRequest(
+                        "Rua",
+                        "100",
+                        "Bairro",
+                        "",
+                        "Estado",
+                        "cep"),
+                new BigDecimal(2000)
+        );
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post(URL_API_PROPOSTA)
+                .content(objectMapper.writeValueAsString(novaPropostaRequest))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .isBadRequest()
+        );
+
+        Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
+
+        assertTrue(propostaOptional.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Retorna status 400 quando a estado for nulo.")
+    void metodoCria_Retorna400_QuandoEstadoNulo() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
+                "041.112.040-90",
+                "email@test.com",
+                "Nome",
+                new EnderecoRequest(
+                        "Rua",
+                        "100",
+                        "Bairro",
+                        "Cidade",
+                        null,
+                        "cep"),
+                new BigDecimal(2000)
+        );
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post(URL_API_PROPOSTA)
+                .content(objectMapper.writeValueAsString(novaPropostaRequest))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .isBadRequest()
+        );
+
+        Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
+
+        assertTrue(propostaOptional.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Retorna status 400 quando a estado for vazio.")
+    void metodoCria_Retorna400_QuandoEstadoVazio() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
+                "041.112.040-90",
+                "email@test.com",
+                "Nome",
+                new EnderecoRequest(
+                        "Rua",
+                        "100",
+                        "Bairro",
+                        "Cidade",
+                        "",
+                        "cep"),
+                new BigDecimal(2000)
+        );
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post(URL_API_PROPOSTA)
+                .content(objectMapper.writeValueAsString(novaPropostaRequest))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .isBadRequest()
+        );
+
+        Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
+
+        assertTrue(propostaOptional.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Retorna status 400 quando a cep for nulo.")
+    void metodoCria_Retorna400_QuandoCepNulo() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
+                "041.112.040-90",
+                "email@test.com",
+                "Nome",
+                new EnderecoRequest(
+                        "Rua",
+                        "100",
+                        "Bairro",
+                        "Cidade",
+                        "Estado",
+                        null),
+                new BigDecimal(2000)
+        );
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post(URL_API_PROPOSTA)
+                .content(objectMapper.writeValueAsString(novaPropostaRequest))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .isBadRequest()
+        );
+
+        Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
+
+        assertTrue(propostaOptional.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Retorna status 400 quando a cep for vazio.")
+    void metodoCria_Retorna400_QuandoCepVazio() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
+                "041.112.040-90",
+                "email@test.com",
+                "Nome",
+                new EnderecoRequest(
+                        "Rua",
+                        "100",
+                        "Bairro",
+                        "Cidade",
+                        "Estado",
+                        ""),
+                new BigDecimal(2000)
+        );
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .post(URL_API_PROPOSTA)
+                .content(objectMapper.writeValueAsString(novaPropostaRequest))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .isBadRequest()
+        );
+
+        Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
+
+        assertTrue(propostaOptional.isEmpty());
     }
 }
