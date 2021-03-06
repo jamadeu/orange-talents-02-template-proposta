@@ -46,7 +46,6 @@ class PropostaControllerTest {
     @Autowired
     private PropostaRepository propostaRepository;
 
-
     @Test
     @DisplayName("retorna status 201, Header Location preenchido com a URL da nova proposta e a nova proposta com cpf persistida no banco em caso de sucesso.")
     void metodoCria_retorna201_EmCasoDeSucessoComCPF() throws Exception {
@@ -64,14 +63,7 @@ class PropostaControllerTest {
                 new BigDecimal(2000)
         );
 
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                .post(URL_API_PROPOSTA)
-                .content(objectMapper.writeValueAsString(novaPropostaRequest))
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers
-                .status()
-                .is(201)
-        ).andReturn();
+        MvcResult mvcResult = performPost(novaPropostaRequest, 201);
 
         Proposta proposta = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento()).orElseThrow();
         String locationEsperado = "http://localhost:8080" + URL_API_PROPOSTA + "/" + proposta.getId();
@@ -97,14 +89,8 @@ class PropostaControllerTest {
                         "cep"),
                 new BigDecimal(2000)
         );
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                .post(URL_API_PROPOSTA)
-                .content(objectMapper.writeValueAsString(novaPropostaRequest))
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers
-                .status()
-                .is(201)
-        ).andReturn();
+
+        MvcResult mvcResult = performPost(novaPropostaRequest, 201);
 
         Proposta proposta = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento()).orElseThrow();
         String locationEsperado = "http://localhost:8080" + URL_API_PROPOSTA + "/" + proposta.getId();
@@ -134,14 +120,7 @@ class PropostaControllerTest {
                 new BigDecimal(2000)
         );
 
-        mockMvc.perform(MockMvcRequestBuilders
-                .post(URL_API_PROPOSTA)
-                .content(objectMapper.writeValueAsString(novaPropostaRequest))
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers
-                .status()
-                .isBadRequest()
-        );
+        performPost(novaPropostaRequest, 400);
 
         Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
 
@@ -168,14 +147,7 @@ class PropostaControllerTest {
                 new BigDecimal(2000)
         );
 
-        mockMvc.perform(MockMvcRequestBuilders
-                .post(URL_API_PROPOSTA)
-                .content(objectMapper.writeValueAsString(novaPropostaRequest))
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers
-                .status()
-                .isBadRequest()
-        );
+        performPost(novaPropostaRequest, 400);
 
         Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
 
@@ -201,14 +173,7 @@ class PropostaControllerTest {
                 new BigDecimal(2000)
         );
 
-        mockMvc.perform(MockMvcRequestBuilders
-                .post(URL_API_PROPOSTA)
-                .content(objectMapper.writeValueAsString(novaPropostaRequest))
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers
-                .status()
-                .isBadRequest()
-        );
+        performPost(novaPropostaRequest, 400);
 
         Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
 
@@ -226,14 +191,7 @@ class PropostaControllerTest {
                 new BigDecimal(2000)
         );
 
-        mockMvc.perform(MockMvcRequestBuilders
-                .post(URL_API_PROPOSTA)
-                .content(objectMapper.writeValueAsString(novaPropostaRequest))
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers
-                .status()
-                .isBadRequest()
-        );
+        performPost(novaPropostaRequest, 400);
 
         Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
 
@@ -257,14 +215,7 @@ class PropostaControllerTest {
                 null
         );
 
-        mockMvc.perform(MockMvcRequestBuilders
-                .post(URL_API_PROPOSTA)
-                .content(objectMapper.writeValueAsString(novaPropostaRequest))
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers
-                .status()
-                .isBadRequest()
-        );
+        performPost(novaPropostaRequest, 400);
 
         Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
 
@@ -289,14 +240,7 @@ class PropostaControllerTest {
                 new BigDecimal(salario)
         );
 
-        mockMvc.perform(MockMvcRequestBuilders
-                .post(URL_API_PROPOSTA)
-                .content(objectMapper.writeValueAsString(novaPropostaRequest))
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers
-                .status()
-                .isBadRequest()
-        );
+        performPost(novaPropostaRequest, 400);
 
         Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
 
@@ -321,14 +265,7 @@ class PropostaControllerTest {
         );
         propostaRepository.save(novaPropostaRequest.toModel());
 
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                .post(URL_API_PROPOSTA)
-                .content(objectMapper.writeValueAsString(novaPropostaRequest))
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers
-                .status()
-                .is(422)
-        ).andReturn();
+        MvcResult mvcResult = performPost(novaPropostaRequest, 422);
 
         String errorMessage = mvcResult.getResponse().getContentAsString();
         assertEquals(errorMessage, "Proposta invalida, ja existe uma proposta para este cliente");
@@ -351,14 +288,8 @@ class PropostaControllerTest {
                 new BigDecimal(2000)
         );
 
-        mockMvc.perform(MockMvcRequestBuilders
-                .post(URL_API_PROPOSTA)
-                .content(objectMapper.writeValueAsString(novaPropostaRequest))
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers
-                .status()
-                .is(201)
-        ).andReturn();
+        performPost(novaPropostaRequest, 201);
+        ;
 
         Proposta proposta = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento()).orElseThrow();
 
@@ -383,14 +314,7 @@ class PropostaControllerTest {
                 new BigDecimal(2000)
         );
 
-        mockMvc.perform(MockMvcRequestBuilders
-                .post(URL_API_PROPOSTA)
-                .content(objectMapper.writeValueAsString(novaPropostaRequest))
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers
-                .status()
-                .is(201)
-        ).andReturn();
+        performPost(novaPropostaRequest, 201);
 
         Proposta proposta = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento()).orElseThrow();
 
@@ -428,12 +352,7 @@ class PropostaControllerTest {
                 "\"salario\":\"2000.00\"," +
                 "\"status\":\"null\"}";
 
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                .get(URL_API_PROPOSTA + "/" + proposta.getId())
-        ).andExpect(MockMvcResultMatchers
-                .status()
-                .isOk()
-        ).andReturn();
+        MvcResult mvcResult = performGet(200, URL_API_PROPOSTA + "/" + proposta.getId());
 
         String body = mvcResult.getResponse().getContentAsString();
         assertEquals(expectedBody, body);
@@ -442,13 +361,7 @@ class PropostaControllerTest {
     @Test
     @DisplayName("Retorna status 400 quando a proposta não existe")
     void metodoBuscaPorId_Retorna400() throws Exception {
-
-        mockMvc.perform(MockMvcRequestBuilders
-                .get(URL_API_PROPOSTA + new Random().nextLong())
-        ).andExpect(MockMvcResultMatchers
-                .status()
-                .is(404)
-        );
+        performGet(404, URL_API_PROPOSTA + new Random().nextLong());
     }
 
     @ParameterizedTest
@@ -470,14 +383,7 @@ class PropostaControllerTest {
                 new BigDecimal(2000)
         );
 
-        mockMvc.perform(MockMvcRequestBuilders
-                .post(URL_API_PROPOSTA)
-                .content(objectMapper.writeValueAsString(novaPropostaRequest))
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers
-                .status()
-                .isBadRequest()
-        );
+        performPost(novaPropostaRequest, 400);
 
         Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
 
@@ -503,14 +409,7 @@ class PropostaControllerTest {
                 new BigDecimal(2000)
         );
 
-        mockMvc.perform(MockMvcRequestBuilders
-                .post(URL_API_PROPOSTA)
-                .content(objectMapper.writeValueAsString(novaPropostaRequest))
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers
-                .status()
-                .isBadRequest()
-        );
+        performPost(novaPropostaRequest, 400);
 
         Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
 
@@ -536,14 +435,7 @@ class PropostaControllerTest {
                 new BigDecimal(2000)
         );
 
-        mockMvc.perform(MockMvcRequestBuilders
-                .post(URL_API_PROPOSTA)
-                .content(objectMapper.writeValueAsString(novaPropostaRequest))
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers
-                .status()
-                .isBadRequest()
-        );
+        performPost(novaPropostaRequest, 400);
 
         Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
 
@@ -569,14 +461,7 @@ class PropostaControllerTest {
                 new BigDecimal(2000)
         );
 
-        mockMvc.perform(MockMvcRequestBuilders
-                .post(URL_API_PROPOSTA)
-                .content(objectMapper.writeValueAsString(novaPropostaRequest))
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers
-                .status()
-                .isBadRequest()
-        );
+        performPost(novaPropostaRequest, 400);
 
         Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
 
@@ -602,14 +487,7 @@ class PropostaControllerTest {
                 new BigDecimal(2000)
         );
 
-        mockMvc.perform(MockMvcRequestBuilders
-                .post(URL_API_PROPOSTA)
-                .content(objectMapper.writeValueAsString(novaPropostaRequest))
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers
-                .status()
-                .isBadRequest()
-        );
+        performPost(novaPropostaRequest, 400);
 
         Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
 
@@ -635,17 +513,30 @@ class PropostaControllerTest {
                 new BigDecimal(2000)
         );
 
-        mockMvc.perform(MockMvcRequestBuilders
-                .post(URL_API_PROPOSTA)
-                .content(objectMapper.writeValueAsString(novaPropostaRequest))
-                .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(MockMvcResultMatchers
-                .status()
-                .isBadRequest()
-        );
+        performPost(novaPropostaRequest, 400);
 
         Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
 
         assertTrue(propostaOptional.isEmpty());
+    }
+
+    private MvcResult performPost(NovaPropostaRequest request, int status) throws Exception {
+        return mockMvc.perform(MockMvcRequestBuilders
+                .post(URL_API_PROPOSTA)
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .is(status)
+        ).andReturn();
+    }
+
+    private MvcResult performGet(int status, String url) throws Exception {
+        return mockMvc.perform(MockMvcRequestBuilders
+                .get(url)
+        ).andExpect(MockMvcResultMatchers
+                .status()
+                .is(status)
+        ).andReturn();
     }
 }
