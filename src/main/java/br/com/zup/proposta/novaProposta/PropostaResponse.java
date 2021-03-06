@@ -1,30 +1,45 @@
 package br.com.zup.proposta.novaProposta;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import javax.validation.constraints.NotNull;
-
 public class PropostaResponse {
 
-    @JsonProperty
+
     private String documento;
-    @JsonProperty
     private String email;
-    @JsonProperty
     private String nome;
-    @JsonProperty
-    private String endereco;
-    @JsonProperty
+    private Endereco endereco;
     private String salario;
-    @JsonProperty
     private String status;
 
-    public PropostaResponse(@NotNull Proposta proposta) {
-        this.documento = proposta.getDocumento();
-        this.email = proposta.getEmail();
-        this.nome = proposta.getNome();
-        this.endereco = proposta.getEndereco();
-        this.salario = String.valueOf(proposta.getSalario());
-        this.status = String.valueOf(proposta.getStatusProposta());
+    public PropostaResponse(String documento, String email, String nome, Endereco endereco, String salario, String status) {
+        this.documento = documento;
+        this.email = email;
+        this.nome = nome;
+        this.endereco = endereco;
+        this.salario = salario;
+        this.status = status;
+    }
+
+    public String getDocumento() {
+        return documento;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public Endereco getEndereco() {
+        return endereco;
+    }
+
+    public String getSalario() {
+        return salario;
+    }
+
+    public String getStatus() {
+        return status;
     }
 }
