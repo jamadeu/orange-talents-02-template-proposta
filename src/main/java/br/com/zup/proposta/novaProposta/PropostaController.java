@@ -4,10 +4,7 @@ import br.com.zup.proposta.analise.AnaliseCliente;
 import br.com.zup.proposta.analise.AnaliseRequest;
 import br.com.zup.proposta.analise.AnaliseResponse;
 import br.com.zup.proposta.analise.TipoStatus;
-import br.com.zup.proposta.cartao.Cartao;
-import br.com.zup.proposta.cartao.CartaoRequest;
-import br.com.zup.proposta.cartao.CartaoResponse;
-import br.com.zup.proposta.cartao.SolicitaCartao;
+import br.com.zup.proposta.cartao.*;
 import feign.FeignException;
 import feign.FeignException.UnprocessableEntity;
 import org.slf4j.Logger;
@@ -32,14 +29,16 @@ class PropostaController {
     private final List<Proposta> propostasPendenteCartao = new ArrayList<>();
 
     private final PropostaRepository propostaRepository;
+    private final CartaoRepository cartaoRepository;
     private final AnaliseCliente analiseCliente;
     private final SolicitaCartao solicitaCartao;
 
-    public PropostaController(PropostaRepository propostaRepository, AnaliseCliente analiseCliente, SolicitaCartao solicitaCartao) {
+    public PropostaController(PropostaRepository propostaRepository, AnaliseCliente analiseCliente, SolicitaCartao solicitaCartao, CartaoRepository cartaoRepository) {
         this.propostaRepository = propostaRepository;
         this.analiseCliente = analiseCliente;
         this.solicitaCartao = solicitaCartao;
-        propostasPendenteCartao.addAll(propostaRepository.propostasPendenteCartao());
+        this.cartaoRepository = cartaoRepository;
+        propostasPendenteCartao.addAll(propostaRepository.findByStatusPropostaAndConcluido(StatusProposta.ELEGIVEL, false));
     }
 
     @GetMapping("/{id}")
@@ -90,6 +89,7 @@ class PropostaController {
                 CartaoResponse cartaoResponse = solicitaCartao.solicita(cartaoRequest);
                 logger.info("Cartao para a proposta {} gerado", proposta.getId());
                 Cartao cartao = cartaoResponse.toModel(propostaRepository);
+                cartaoRepository.save(cartao);
                 proposta.adicionaCartao(cartao);
                 propostaRepository.save(proposta);
                 logger.info("Cartao {} adicionado a proposta {}", cartao.getNumero(), proposta.getId());

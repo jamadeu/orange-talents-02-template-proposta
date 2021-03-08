@@ -15,17 +15,31 @@ public class CartaoResponse {
 
     final Logger logger = LoggerFactory.getLogger(CartaoResponse.class);
 
-    private String id;
-    private LocalDateTime emitidoEm;
-    private String titular;
-    private List<BloqueioResponse> bloqueiosResponse;
-    private List<AvisoResponse> avisosResponse;
-    private List<CarteiraResponse> carteirasResponse;
-    private List<ParcelaResponse> parcelasResponse;
-    private BigDecimal limite;
-    private RenegociacaoResponse renegociacaoResponse;
-    private VencimentoResponse vencimentoResponse;
-    private String idProposta;
+    private final String id;
+    private final LocalDateTime emitidoEm;
+    private final String titular;
+    private final List<BloqueioResponse> bloqueiosResponse;
+    private final List<AvisoResponse> avisosResponse;
+    private final List<CarteiraResponse> carteirasResponse;
+    private final List<ParcelaResponse> parcelasResponse;
+    private final BigDecimal limite;
+    private final RenegociacaoResponse renegociacaoResponse;
+    private final VencimentoResponse vencimentoResponse;
+    private final String idProposta;
+
+    public CartaoResponse(String id, LocalDateTime emitidoEm, String titular, List<BloqueioResponse> bloqueiosResponse, List<AvisoResponse> avisosResponse, List<CarteiraResponse> carteirasResponse, List<ParcelaResponse> parcelasResponse, BigDecimal limite, RenegociacaoResponse renegociacaoResponse, VencimentoResponse vencimentoResponse, String idProposta) {
+        this.id = id;
+        this.emitidoEm = emitidoEm;
+        this.titular = titular;
+        this.bloqueiosResponse = bloqueiosResponse;
+        this.avisosResponse = avisosResponse;
+        this.carteirasResponse = carteirasResponse;
+        this.parcelasResponse = parcelasResponse;
+        this.limite = limite;
+        this.renegociacaoResponse = renegociacaoResponse;
+        this.vencimentoResponse = vencimentoResponse;
+        this.idProposta = idProposta;
+    }
 
     public Cartao toModel(PropostaRepository propostaRepository) {
         Optional<Proposta> optionalProposta = propostaRepository.findById(Long.getLong(idProposta));

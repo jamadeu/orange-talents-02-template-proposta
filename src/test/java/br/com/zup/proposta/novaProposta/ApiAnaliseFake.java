@@ -3,8 +3,6 @@ package br.com.zup.proposta.novaProposta;
 import br.com.zup.proposta.analise.AnaliseRequest;
 import br.com.zup.proposta.analise.AnaliseResponse;
 import br.com.zup.proposta.analise.TipoStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Profile(value = "test")
 public class ApiAnaliseFake {
-
-    final Logger logger = LoggerFactory.getLogger(ApiAnaliseFake.class);
-
-    public ApiAnaliseFake() {
-        logger.info("ApiAnaliseFake construido");
-    }
 
     @PostMapping("/analise-fake")
     public ResponseEntity<AnaliseResponse> analise(@RequestBody AnaliseRequest request) {

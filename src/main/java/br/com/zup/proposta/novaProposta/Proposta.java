@@ -46,7 +46,7 @@ public class Proposta {
     @Enumerated(EnumType.STRING)
     private StatusProposta statusProposta;
 
-    @OneToOne(mappedBy = "cartao")
+    @OneToOne(mappedBy = "proposta")
     private Cartao cartao;
 
     private Boolean concluido;
