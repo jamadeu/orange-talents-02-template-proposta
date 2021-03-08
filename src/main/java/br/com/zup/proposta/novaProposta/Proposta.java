@@ -10,6 +10,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 public class Proposta {
@@ -47,6 +48,10 @@ public class Proposta {
 
     @OneToOne(mappedBy = "cartao")
     private Cartao cartao;
+
+    private Boolean concluido;
+
+    private LocalDateTime concluidoEm;
 
     @Deprecated
     public Proposta() {
@@ -92,15 +97,30 @@ public class Proposta {
         return salario;
     }
 
+    public Boolean getConcluido() {
+        return concluido;
+    }
+
+    public LocalDateTime getConcluidoEm() {
+        return concluidoEm;
+    }
+
     public void alteraStatus(TipoStatus tipoStatus) {
         if (tipoStatus == TipoStatus.SEM_RESTRICAO) {
             this.statusProposta = StatusProposta.ELEGIVEL;
         } else {
             this.statusProposta = StatusProposta.NAO_ELEGIVEL;
+            this.concluiProposta();
         }
     }
 
     public void adicionaCartao(@NotNull Cartao cartao) {
         this.cartao = cartao;
+        this.concluiProposta();
+    }
+
+    public void concluiProposta() {
+        this.concluidoEm = LocalDateTime.now();
+        this.concluido = true;
     }
 }

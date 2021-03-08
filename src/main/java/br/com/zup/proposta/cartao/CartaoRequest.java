@@ -14,9 +14,9 @@ public class CartaoRequest {
     private final String nome;
 
     @NotBlank
-    private final String idProposta;
+    private final Long idProposta;
 
-    public CartaoRequest(@NotBlank String documento, @NotBlank String nome, @NotBlank String idProposta) {
+    public CartaoRequest(@NotBlank String documento, @NotBlank String nome, @NotBlank Long idProposta) {
         this.documento = documento;
         this.nome = nome;
         this.idProposta = idProposta;
@@ -30,7 +30,7 @@ public class CartaoRequest {
         return nome;
     }
 
-    public String getIdProposta() {
+    public Long getIdProposta() {
         return idProposta;
     }
 }

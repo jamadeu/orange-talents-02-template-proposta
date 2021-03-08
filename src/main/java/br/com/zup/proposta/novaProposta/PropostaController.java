@@ -4,15 +4,23 @@ import br.com.zup.proposta.analise.AnaliseCliente;
 import br.com.zup.proposta.analise.AnaliseRequest;
 import br.com.zup.proposta.analise.AnaliseResponse;
 import br.com.zup.proposta.analise.TipoStatus;
+import br.com.zup.proposta.cartao.Cartao;
+import br.com.zup.proposta.cartao.CartaoRequest;
+import br.com.zup.proposta.cartao.CartaoResponse;
+import br.com.zup.proposta.cartao.SolicitaCartao;
+import feign.FeignException;
 import feign.FeignException.UnprocessableEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -21,12 +29,17 @@ class PropostaController {
 
     final Logger logger = LoggerFactory.getLogger(PropostaController.class);
 
-    final PropostaRepository propostaRepository;
-    final AnaliseCliente analiseCliente;
+    private final List<Proposta> propostasPendenteCartao = new ArrayList<>();
 
-    public PropostaController(PropostaRepository propostaRepository, AnaliseCliente analiseCliente) {
+    private final PropostaRepository propostaRepository;
+    private final AnaliseCliente analiseCliente;
+    private final SolicitaCartao solicitaCartao;
+
+    public PropostaController(PropostaRepository propostaRepository, AnaliseCliente analiseCliente, SolicitaCartao solicitaCartao) {
         this.propostaRepository = propostaRepository;
         this.analiseCliente = analiseCliente;
+        this.solicitaCartao = solicitaCartao;
+        propostasPendenteCartao.addAll(propostaRepository.propostasPendenteCartao());
     }
 
     @GetMapping("/{id}")
@@ -52,6 +65,8 @@ class PropostaController {
         try {
             analiseResponse = analiseCliente.analise(
                     new AnaliseRequest(proposta.getDocumento(), proposta.getNome(), String.valueOf(proposta.getId())));
+            propostasPendenteCartao.add(proposta);
+            logger.info("Proposta id = {}, pendente cartao", proposta.getId());
         } catch (UnprocessableEntity e) {
             logger.info("Status code da analise {}", e.status());
             logger.info(e.contentUTF8());
@@ -63,5 +78,28 @@ class PropostaController {
         logger.info("Proposta {}.", proposta.getStatusProposta());
         URI uri = uriBuilder.path("/api/proposta/{id}").port(8080).buildAndExpand(proposta.getId()).toUri();
         return ResponseEntity.created(uri).build();
+    }
+
+    @Scheduled(fixedDelay = 1000)
+    public void solicitaCartao() {
+        while (!propostasPendenteCartao.isEmpty()) {
+            Proposta proposta = propostasPendenteCartao.get(0);
+            logger.info("Solicitando cartao para a proposta {}", proposta.getId());
+            CartaoRequest cartaoRequest = new CartaoRequest(proposta.getDocumento(), proposta.getNome(), proposta.getId());
+            try {
+                CartaoResponse cartaoResponse = solicitaCartao.solicita(cartaoRequest);
+                logger.info("Cartao para a proposta {} gerado", proposta.getId());
+                Cartao cartao = cartaoResponse.toModel(propostaRepository);
+                proposta.adicionaCartao(cartao);
+                propostaRepository.save(proposta);
+                logger.info("Cartao {} adicionado a proposta {}", cartao.getNumero(), proposta.getId());
+                propostasPendenteCartao.remove(0);
+            } catch (FeignException e) {
+                logger.warn("Falha ao gerar cartao para a proposta {}", proposta.getId());
+                logger.warn("Status {}", e.status());
+                logger.warn("Mensagem {}", e.getMessage());
+                logger.info("Aguardando nova iteração");
+            }
+        }
     }
 }
