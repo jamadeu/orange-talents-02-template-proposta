@@ -1,30 +1,28 @@
 package br.com.zup.proposta.cartao.vencimento;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
-@Embeddable
-public class Vencimento {
+public class VencimentoResponse {
 
     @NotBlank
-    @Column(nullable = false)
     private String idVencimento;
 
     @NotNull
     @Positive
-    @Column(nullable = false)
     private Integer dia;
 
-    @Deprecated
-    public Vencimento() {
-    }
-
-    public Vencimento(@NotBlank String idVencimento, @NotNull @Positive Integer dia) {
+    public VencimentoResponse(@NotBlank String idVencimento, @NotNull @Positive Integer dia) {
         this.idVencimento = idVencimento;
         this.dia = dia;
+    }
+
+    public Vencimento toModel() {
+        return new Vencimento(
+                idVencimento,
+                dia
+        );
     }
 
     public String getIdVencimento() {
