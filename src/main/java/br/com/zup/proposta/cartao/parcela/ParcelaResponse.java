@@ -1,40 +1,38 @@
 package br.com.zup.proposta.cartao.parcela;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Embeddable
-public class Parcela {
+public class ParcelaResponse {
 
     @NotBlank
-    @Column(nullable = false)
-    private String idParcela;
+    private final String idParcela;
 
     @NotNull
-    @Column(nullable = false)
-    private Integer quantidade;
+    private final Integer quantidade;
 
     @NotNull
-    @Column(nullable = false)
-    private BigDecimal valor;
+    private final BigDecimal valor;
 
     @NotNull
-    @Column(nullable = false)
-    private LocalDateTime dataDeCriacao;
+    private final LocalDateTime dataDeCriacao;
 
-    @Deprecated
-    public Parcela() {
-    }
-
-    public Parcela(@NotBlank String idParcela, @NotNull Integer quantidade, @NotNull BigDecimal valor, @NotNull LocalDateTime dataDeCriacao) {
+    public ParcelaResponse(@NotBlank String idParcela, @NotNull Integer quantidade, @NotNull BigDecimal valor, @NotNull LocalDateTime dataDeCriacao) {
         this.idParcela = idParcela;
         this.quantidade = quantidade;
         this.valor = valor;
         this.dataDeCriacao = dataDeCriacao;
+    }
+
+    private Parcela toModel() {
+        return new Parcela(
+                idParcela,
+                quantidade,
+                valor,
+                dataDeCriacao
+        );
     }
 
     public String getIdParcela() {
