@@ -17,6 +17,10 @@ public class Aviso {
     @Column(nullable = false)
     private String destino;
 
+    @Deprecated
+    public Aviso() {
+    }
+
     public Aviso(@NotNull LocalDate validoAte, @NotBlank String destino) {
         this.validoAte = validoAte;
         this.destino = destino;

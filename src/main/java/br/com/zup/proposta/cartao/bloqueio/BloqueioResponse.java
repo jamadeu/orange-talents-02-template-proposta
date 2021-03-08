@@ -1,39 +1,43 @@
 package br.com.zup.proposta.cartao.bloqueio;
 
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-@Embeddable
-public class Bloqueio {
+
+public class BloqueioResponse {
 
     @NotBlank
     @Column(nullable = false)
-    private String idBloqueio;
+    private final String idBloqueio;
 
     @NotNull
     @Column(nullable = false)
-    private LocalDateTime bloqueadoEm;
+    private final LocalDateTime bloqueadoEm;
 
     @NotBlank
     @Column(nullable = false)
-    private String sistemaResponsavel;
+    private final String sistemaResponsavel;
 
     @NotNull
     @Column(nullable = false)
-    private Boolean ativo;
+    private final Boolean ativo;
 
-    @Deprecated
-    public Bloqueio() {
-    }
-
-    public Bloqueio(@NotBlank String idBloqueio, @NotNull LocalDateTime bloqueadoEm, @NotBlank String sistemaResponsavel, @NotNull Boolean ativo) {
+    public BloqueioResponse(@NotBlank String idBloqueio, @NotNull LocalDateTime bloqueadoEm, @NotBlank String sistemaResponsavel, @NotNull Boolean ativo) {
         this.idBloqueio = idBloqueio;
         this.bloqueadoEm = bloqueadoEm;
         this.sistemaResponsavel = sistemaResponsavel;
         this.ativo = ativo;
+    }
+
+    public Bloqueio toModel() {
+        return new Bloqueio(
+                idBloqueio,
+                bloqueadoEm,
+                sistemaResponsavel,
+                ativo
+        );
     }
 
     public String getIdBloqueio() {
