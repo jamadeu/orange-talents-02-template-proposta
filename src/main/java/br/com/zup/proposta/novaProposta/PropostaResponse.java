@@ -8,6 +8,7 @@ public class PropostaResponse {
     private final Endereco endereco;
     private final String salario;
     private final String status;
+    private final String cartao;
 
     public PropostaResponse(Proposta proposta) {
         this.documento = proposta.getDocumento();
@@ -15,7 +16,13 @@ public class PropostaResponse {
         this.nome = proposta.getNome();
         this.endereco = proposta.getEndereco();
         this.salario = proposta.getSalario().toString();
-        this.status = String.valueOf(proposta.getStatusProposta());
+        StatusProposta statusProposta = proposta.getStatusProposta();
+        this.status = String.valueOf(statusProposta);
+        if (statusProposta == StatusProposta.NAO_ELEGIVEL) {
+            this.cartao = "Não possui cartao";
+        } else {
+            this.cartao = proposta.getCartao().getNumero();
+        }
     }
 
     public String getDocumento() {
@@ -40,5 +47,9 @@ public class PropostaResponse {
 
     public String getStatus() {
         return status;
+    }
+
+    public String getCartao() {
+        return cartao;
     }
 }

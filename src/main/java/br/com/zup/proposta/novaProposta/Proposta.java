@@ -1,6 +1,7 @@
 package br.com.zup.proposta.novaProposta;
 
 import br.com.zup.proposta.analise.TipoStatus;
+import br.com.zup.proposta.cartao.Cartao;
 import br.com.zup.proposta.compartilhado.anotacoes.CpfOuCnpj;
 
 import javax.persistence.*;
@@ -43,7 +44,10 @@ public class Proposta {
 
     @Enumerated(EnumType.STRING)
     private StatusProposta statusProposta;
-    
+
+    @OneToOne(mappedBy = "cartao")
+    private Cartao cartao;
+
     @Deprecated
     public Proposta() {
     }
@@ -54,6 +58,10 @@ public class Proposta {
         this.nome = nome;
         this.endereco = endereco;
         this.salario = salario;
+    }
+
+    public Cartao getCartao() {
+        return cartao;
     }
 
     public Long getId() {
@@ -90,5 +98,9 @@ public class Proposta {
         } else {
             this.statusProposta = StatusProposta.NAO_ELEGIVEL;
         }
+    }
+
+    public void adicionaCartao(@NotNull Cartao cartao) {
+        this.cartao = cartao;
     }
 }
