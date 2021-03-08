@@ -1,6 +1,5 @@
 package br.com.zup.proposta.cartao.aviso;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -9,11 +8,9 @@ import java.time.LocalDate;
 public class AvisoResponse {
 
     @NotNull
-    @Column(nullable = false)
     private final LocalDate validoAte;
 
     @NotBlank
-    @Column(nullable = false)
     private final String destino;
 
     public AvisoResponse(@NotNull LocalDate validoAte, @NotBlank String destino) {

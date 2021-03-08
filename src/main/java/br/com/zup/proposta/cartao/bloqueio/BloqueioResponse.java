@@ -1,6 +1,5 @@
 package br.com.zup.proposta.cartao.bloqueio;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -9,19 +8,15 @@ import java.time.LocalDateTime;
 public class BloqueioResponse {
 
     @NotBlank
-    @Column(nullable = false)
     private final String idBloqueio;
 
     @NotNull
-    @Column(nullable = false)
     private final LocalDateTime bloqueadoEm;
 
     @NotBlank
-    @Column(nullable = false)
     private final String sistemaResponsavel;
 
     @NotNull
-    @Column(nullable = false)
     private final Boolean ativo;
 
     public BloqueioResponse(@NotBlank String idBloqueio, @NotNull LocalDateTime bloqueadoEm, @NotBlank String sistemaResponsavel, @NotNull Boolean ativo) {
