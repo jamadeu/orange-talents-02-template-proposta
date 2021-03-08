@@ -1,4 +1,4 @@
-package br.com.zup.proposta.cartao.renegociacao;
+package br.com.zup.proposta.cartao;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

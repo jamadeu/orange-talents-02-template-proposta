@@ -1,4 +1,4 @@
-package br.com.zup.proposta.cartao.parcela;
+package br.com.zup.proposta.cartao;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -26,7 +26,7 @@ public class ParcelaResponse {
         this.dataDeCriacao = dataDeCriacao;
     }
 
-    private Parcela toModel() {
+    public Parcela toModel() {
         return new Parcela(
                 idParcela,
                 quantidade,

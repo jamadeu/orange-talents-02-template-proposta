@@ -1,41 +1,41 @@
-package br.com.zup.proposta.cartao.carteira;
+package br.com.zup.proposta.cartao;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-
-public class CarteiraResponse {
+@Embeddable
+public class Carteira {
 
     @NotBlank
-    private final String idCarteira;
+    @Column(nullable = false)
+    private String idCarteira;
 
     @NotBlank
     @Email
-    private final String email;
+    @Column(nullable = false)
+    private String email;
 
     @NotNull
-    private final LocalDateTime associadaEm;
+    @Column(nullable = false)
+    private LocalDateTime associadaEm;
 
     @NotBlank
-    private final String emissor;
+    @Column(nullable = false)
+    private String emissor;
 
+    @Deprecated
+    public Carteira() {
+    }
 
-    public CarteiraResponse(@NotBlank String idCarteira, @NotBlank @Email String email, @NotNull LocalDateTime associadaEm, @NotBlank String emissor) {
+    public Carteira(@NotBlank String idCarteira, @NotBlank @Email String email, @NotNull LocalDateTime associadaEm, @NotBlank String emissor) {
         this.idCarteira = idCarteira;
         this.email = email;
         this.associadaEm = associadaEm;
         this.emissor = emissor;
-    }
-
-    public Carteira toModel() {
-        return new Carteira(
-                idCarteira,
-                email,
-                associadaEm,
-                emissor
-        );
     }
 
     public String getIdCarteira() {

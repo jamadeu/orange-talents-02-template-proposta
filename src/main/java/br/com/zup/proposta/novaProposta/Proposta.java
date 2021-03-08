@@ -43,7 +43,7 @@ public class Proposta {
 
     @Enumerated(EnumType.STRING)
     private StatusProposta statusProposta;
-
+    
     @Deprecated
     public Proposta() {
     }

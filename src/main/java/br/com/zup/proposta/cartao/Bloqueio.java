@@ -1,4 +1,4 @@
-package br.com.zup.proposta.cartao.bloqueio;
+package br.com.zup.proposta.cartao;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
