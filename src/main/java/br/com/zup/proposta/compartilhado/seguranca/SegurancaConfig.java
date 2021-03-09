@@ -13,16 +13,14 @@ public class SegurancaConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.httpBasic().disable()
-                .formLogin().disable()
+        http
                 .csrf().disable()
                 .authorizeRequests(authorize ->
                         authorize
-                                .antMatchers("/actuator/prometheus").permitAll()
+                                .antMatchers("/actuator/**").permitAll()
                                 .antMatchers("/auth/login").permitAll()
                                 .anyRequest().authenticated()
-                ).headers().frameOptions().disable()
-                .and()
+                )
                 .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
