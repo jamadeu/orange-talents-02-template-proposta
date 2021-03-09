@@ -1,6 +1,7 @@
 package br.com.zup.proposta.cartao;
 
 import br.com.zup.proposta.aviso.Aviso;
+import br.com.zup.proposta.biometria.Biometria;
 import br.com.zup.proposta.bloqueio.Bloqueio;
 import br.com.zup.proposta.carteira.Carteira;
 import br.com.zup.proposta.novaProposta.Proposta;
@@ -58,6 +59,9 @@ public class Cartao {
     @JoinColumn(name = "idProposta", referencedColumnName = "id")
     private Proposta proposta;
 
+    @OneToMany(cascade = CascadeType.MERGE)
+    private final List<Biometria> biometrias = new ArrayList<>();
+
     @Deprecated
     public Cartao() {
     }
@@ -74,6 +78,10 @@ public class Cartao {
         this.renegociacao = renegociacao;
         this.vencimento = vencimento;
         this.proposta = proposta;
+    }
+
+    public void adicionaBiometria(Biometria biometria) {
+        this.biometrias.add(biometria);
     }
 
     public Long getId() {
@@ -123,4 +131,9 @@ public class Cartao {
     public Proposta getProposta() {
         return proposta;
     }
+
+    public List<Biometria> getBiometrias() {
+        return biometrias;
+    }
+
 }

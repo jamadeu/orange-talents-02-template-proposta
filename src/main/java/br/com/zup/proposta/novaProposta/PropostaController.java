@@ -65,6 +65,7 @@ class PropostaController {
             analiseResponse = analiseCliente.analise(
                     new AnaliseRequest(proposta.getDocumento(), proposta.getNome(), String.valueOf(proposta.getId())));
             propostasPendenteCartao.add(proposta);
+            em.persist(proposta);
             logger.info("Proposta id = {}, pendente cartao", proposta.getId());
         } catch (UnprocessableEntity e) {
             logger.info("Status code da analise {}", e.status());
@@ -73,7 +74,7 @@ class PropostaController {
         }
         logger.info("Resultado da analise, cliente {}.", analiseResponse.getResultadoSolicitacao());
         proposta.alteraStatus(analiseResponse.getResultadoSolicitacao());
-        em.persist(proposta);
+        em.merge(proposta);
         logger.info("Proposta {}.", proposta.getStatusProposta());
         URI uri = uriBuilder.path("/api/proposta/{id}").port(8080).buildAndExpand(proposta.getId()).toUri();
         return ResponseEntity.created(uri).build();
