@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Profile(value = "test")
 public class ApiAnaliseFake {
 
-    @PostMapping("/analise-fake")
+    @PostMapping("/api/analise-fake")
     public ResponseEntity<AnaliseResponse> analise(@RequestBody AnaliseRequest request) {
         if (request.getDocumento().startsWith("3")) {
             AnaliseResponse analiseResponse = new AnaliseResponse(

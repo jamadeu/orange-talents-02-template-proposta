@@ -1,36 +1,39 @@
-package br.com.zup.proposta.cartao;
+package br.com.zup.proposta.vencimento;
 
-import org.apache.tomcat.jni.Local;
-
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 
-public class VencimentoResponse {
+@Entity
+public class Vencimento {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotBlank
+    @Column(nullable = false)
     private String idVencimento;
 
     @NotNull
     @Positive
+    @Column(nullable = false)
     private Integer dia;
 
     @NotNull
-    private LocalDateTime dataDeCriacao;
+    @Column(nullable = false)
+    private LocalDateTime dataDeCriacao = LocalDateTime.now();
 
-    public VencimentoResponse(@NotBlank String idVencimento, @NotNull @Positive Integer dia, @NotNull LocalDateTime dataDeCriacao) {
+    @Deprecated
+    public Vencimento() {
+    }
+
+    public Vencimento(@NotBlank String idVencimento, @NotNull @Positive Integer dia, @NotNull LocalDateTime dataDeCriacao) {
         this.idVencimento = idVencimento;
         this.dia = dia;
         this.dataDeCriacao = dataDeCriacao;
-    }
-
-    public Vencimento toModel() {
-        return new Vencimento(
-                idVencimento,
-                dia,
-                dataDeCriacao
-        );
     }
 
     public String getIdVencimento() {

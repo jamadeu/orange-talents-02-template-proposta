@@ -1,13 +1,18 @@
-package br.com.zup.proposta.cartao;
+package br.com.zup.proposta.bloqueio;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import br.com.zup.proposta.cartao.Cartao;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-@Embeddable
+@Entity
 public class Bloqueio {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotBlank
     @Column(nullable = false)
@@ -25,15 +30,27 @@ public class Bloqueio {
     @Column(nullable = false)
     private Boolean ativo;
 
+    @ManyToOne
+    private Cartao cartao;
+
     @Deprecated
     public Bloqueio() {
     }
 
-    public Bloqueio(@NotBlank String idBloqueio, @NotNull LocalDateTime bloqueadoEm, @NotBlank String sistemaResponsavel, @NotNull Boolean ativo) {
+    public Bloqueio(@NotBlank String idBloqueio, @NotNull LocalDateTime bloqueadoEm, @NotBlank String sistemaResponsavel, @NotNull Boolean ativo, Cartao cartao) {
         this.idBloqueio = idBloqueio;
         this.bloqueadoEm = bloqueadoEm;
         this.sistemaResponsavel = sistemaResponsavel;
         this.ativo = ativo;
+        this.cartao = cartao;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Cartao getCartao() {
+        return cartao;
     }
 
     public String getIdBloqueio() {

@@ -1,42 +1,36 @@
-package br.com.zup.proposta.cartao;
+package br.com.zup.proposta.renegociacao;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public class ParcelaResponse {
+public class RenegociacaoResponse {
 
-    @NotBlank
-    private final String idParcela;
+    private final String idRenegociacao;
 
-    @NotNull
     private final Integer quantidade;
 
-    @NotNull
     private final BigDecimal valor;
 
-    @NotNull
     private final LocalDateTime dataDeCriacao;
 
-    public ParcelaResponse(@NotBlank String idParcela, @NotNull Integer quantidade, @NotNull BigDecimal valor, @NotNull LocalDateTime dataDeCriacao) {
-        this.idParcela = idParcela;
+    public RenegociacaoResponse(String idRenegociacao, Integer quantidade, BigDecimal valor, LocalDateTime dataDeCriacao) {
+        this.idRenegociacao = idRenegociacao;
         this.quantidade = quantidade;
         this.valor = valor;
         this.dataDeCriacao = dataDeCriacao;
     }
 
-    public Parcela toModel() {
-        return new Parcela(
-                idParcela,
+    public Renegociacao toModel() {
+        return new Renegociacao(
+                idRenegociacao,
                 quantidade,
                 valor,
                 dataDeCriacao
         );
     }
 
-    public String getIdParcela() {
-        return idParcela;
+    public String getIdRenegociacao() {
+        return idRenegociacao;
     }
 
     public Integer getQuantidade() {

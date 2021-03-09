@@ -1,18 +1,24 @@
-package br.com.zup.proposta.cartao;
+package br.com.zup.proposta.parcela;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import br.com.zup.proposta.cartao.Cartao;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Embeddable
-public class Renegociacao {
+@Entity
+public class Parcela {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotBlank
     @Column(nullable = false)
-    private String idRenegociacao;
+    private String idParcela;
 
     @NotNull
     @Column(nullable = false)
@@ -26,19 +32,31 @@ public class Renegociacao {
     @Column(nullable = false)
     private LocalDateTime dataDeCriacao;
 
+    @ManyToOne
+    private Cartao cartao;
+
     @Deprecated
-    public Renegociacao() {
+    public Parcela() {
     }
 
-    public Renegociacao(@NotBlank String idRenegociacao, @NotNull Integer quantidade, @NotNull BigDecimal valor, @NotNull LocalDateTime dataDeCriacao) {
-        this.idRenegociacao = idRenegociacao;
+    public Parcela(@NotBlank String idParcela, @NotNull Integer quantidade, @NotNull BigDecimal valor, @NotNull LocalDateTime dataDeCriacao, Cartao cartao) {
+        this.idParcela = idParcela;
         this.quantidade = quantidade;
         this.valor = valor;
         this.dataDeCriacao = dataDeCriacao;
+        this.cartao = cartao;
     }
 
-    public String getIdRenegociacao() {
-        return idRenegociacao;
+    public Long getId() {
+        return id;
+    }
+
+    public Cartao getCartao() {
+        return cartao;
+    }
+
+    public String getIdParcela() {
+        return idParcela;
     }
 
     public Integer getQuantidade() {
@@ -52,4 +70,6 @@ public class Renegociacao {
     public LocalDateTime getDataDeCriacao() {
         return dataDeCriacao;
     }
+
+
 }

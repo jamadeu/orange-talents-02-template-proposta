@@ -18,8 +18,8 @@ public class PropostaResponse {
         this.salario = proposta.getSalario().toString();
         StatusProposta statusProposta = proposta.getStatusProposta();
         this.status = String.valueOf(statusProposta);
-        if (statusProposta == StatusProposta.NAO_ELEGIVEL) {
-            this.cartao = "Não possui cartao";
+        if (statusProposta == StatusProposta.NAO_ELEGIVEL || proposta.getCartao() == null) {
+            this.cartao = "Nao possui cartao";
         } else {
             this.cartao = proposta.getCartao().getNumero();
         }

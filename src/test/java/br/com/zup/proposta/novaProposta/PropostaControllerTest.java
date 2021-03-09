@@ -23,12 +23,14 @@ import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
-        properties = {"API_ANALISE=http://localhost:8080/analise-fake"})
+        properties = {
+                "API_ANALISE=http://localhost:8080/api/analise-fake",
+                "API_CARTOES=http://localhost:8080/api/cartoes-fake"
+        })
 @AutoConfigureTestDatabase
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -268,7 +270,7 @@ class PropostaControllerTest {
         MvcResult mvcResult = performPost(novaPropostaRequest, 422);
 
         String errorMessage = mvcResult.getResponse().getContentAsString();
-        assertEquals(errorMessage, "Proposta invalida, ja existe uma proposta para este cliente");
+        assertEquals(errorMessage, "{\"mensagens\":[\"Ja existe uma proposta para este cliente\"]}");
     }
 
     @Test
@@ -350,7 +352,8 @@ class PropostaControllerTest {
                 "\"estado\":\"Estado\"," +
                 "\"cep\":\"cep\"}," +
                 "\"salario\":\"2000.00\"," +
-                "\"status\":\"null\"}";
+                "\"status\":\"null\"," +
+                "\"cartao\":\"Nao possui cartao\"}";
 
         MvcResult mvcResult = performGet(200, URL_API_PROPOSTA + "/" + proposta.getId());
 
@@ -518,6 +521,31 @@ class PropostaControllerTest {
         Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
 
         assertTrue(propostaOptional.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Cartao gerado e adicionado a proposta")
+    void cartaoGerado() throws Exception {
+        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
+                "041.112.040-90",
+                "email@test.com",
+                "Nome",
+                new EnderecoRequest(
+                        "Rua",
+                        "100",
+                        "Bairro",
+                        "Cidade",
+                        "Estado",
+                        "cep"),
+                new BigDecimal(2000)
+        );
+
+        MvcResult mvcResult = performPost(novaPropostaRequest, 201);
+        Thread.sleep(2000);
+        Proposta proposta = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento()).orElseThrow();
+
+        assertEquals(proposta.getEmail(), novaPropostaRequest.getEmail());
+        assertNotNull(proposta.getCartao());
     }
 
     private MvcResult performPost(NovaPropostaRequest request, int status) throws Exception {

@@ -1,12 +1,19 @@
 package br.com.zup.proposta.cartao;
 
+import br.com.zup.proposta.aviso.Aviso;
+import br.com.zup.proposta.bloqueio.Bloqueio;
+import br.com.zup.proposta.carteira.Carteira;
 import br.com.zup.proposta.novaProposta.Proposta;
+import br.com.zup.proposta.parcela.Parcela;
+import br.com.zup.proposta.renegociacao.Renegociacao;
+import br.com.zup.proposta.vencimento.Vencimento;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,31 +32,25 @@ public class Cartao {
     @NotBlank
     private String titular;
 
-    @NotNull
-    @Embedded
-    private List<Bloqueio> bloqueios;
+    @OneToMany(mappedBy = "cartao", cascade = CascadeType.MERGE)
+    private List<Bloqueio> bloqueios = new ArrayList<>();
 
-    @NotNull
-    @Embedded
-    private List<Aviso> avisos;
+    @OneToMany(mappedBy = "cartao", cascade = CascadeType.MERGE)
+    private List<Aviso> avisos = new ArrayList<>();
 
-    @NotNull
-    @Embedded
-    private List<Carteira> carteiras;
+    @OneToMany(cascade = CascadeType.MERGE)
+    private List<Carteira> carteiras = new ArrayList<>();
 
-    @NotNull
-    @Embedded
-    private List<Parcela> parcelas;
+    @OneToMany(cascade = CascadeType.MERGE)
+    private List<Parcela> parcelas = new ArrayList<>();
 
     @NotNull
     private BigDecimal limite;
 
-    @NotNull
-    @Embedded
+    @OneToOne(cascade = CascadeType.MERGE)
     private Renegociacao renegociacao;
 
-    @NotNull
-    @Embedded
+    @OneToOne(cascade = CascadeType.MERGE)
     private Vencimento vencimento;
 
     @NotNull
@@ -61,7 +62,7 @@ public class Cartao {
     public Cartao() {
     }
 
-    public Cartao(@NotBlank String numero, @NotNull LocalDateTime emitidoEm, @NotBlank String titular, @NotNull List<Bloqueio> bloqueios, @NotNull List<Aviso> avisos, @NotNull List<Carteira> carteiras, @NotNull List<Parcela> parcelas, @NotNull BigDecimal limite, @NotNull Renegociacao renegociacao, @NotNull Vencimento vencimento, @NotNull Proposta proposta) {
+    public Cartao(@NotBlank String numero, @NotNull LocalDateTime emitidoEm, @NotBlank String titular, List<Bloqueio> bloqueios, List<Aviso> avisos, List<Carteira> carteiras, List<Parcela> parcelas, @NotNull BigDecimal limite, Renegociacao renegociacao, Vencimento vencimento, @NotNull Proposta proposta) {
         this.numero = numero;
         this.emitidoEm = emitidoEm;
         this.titular = titular;

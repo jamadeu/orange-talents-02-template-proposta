@@ -1,4 +1,6 @@
-package br.com.zup.proposta.cartao;
+package br.com.zup.proposta.carteira;
+
+import br.com.zup.proposta.cartao.Cartao;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -21,12 +23,14 @@ public class CarteiraResponse {
     @NotBlank
     private final String emissor;
 
+    private final Cartao cartao;
 
-    public CarteiraResponse(@NotBlank String idCarteira, @NotBlank @Email String email, @NotNull LocalDateTime associadaEm, @NotBlank String emissor) {
+    public CarteiraResponse(@NotBlank String idCarteira, @NotBlank @Email String email, @NotNull LocalDateTime associadaEm, @NotBlank String emissor, Cartao cartao) {
         this.idCarteira = idCarteira;
         this.email = email;
         this.associadaEm = associadaEm;
         this.emissor = emissor;
+        this.cartao = cartao;
     }
 
     public Carteira toModel() {
@@ -34,8 +38,13 @@ public class CarteiraResponse {
                 idCarteira,
                 email,
                 associadaEm,
-                emissor
+                emissor,
+                cartao
         );
+    }
+
+    public Cartao getCartao() {
+        return cartao;
     }
 
     public String getIdCarteira() {

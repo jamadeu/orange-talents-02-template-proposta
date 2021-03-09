@@ -1,6 +1,7 @@
 package br.com.zup.proposta.novaProposta;
 
 import br.com.zup.proposta.compartilhado.anotacoes.CpfOuCnpj;
+import br.com.zup.proposta.compartilhado.anotacoes.PropostaUnica;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
@@ -13,6 +14,7 @@ public class NovaPropostaRequest {
 
     @NotBlank
     @CpfOuCnpj
+    @PropostaUnica
     private final String documento;
     @NotBlank
     @Email

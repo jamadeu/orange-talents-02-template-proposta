@@ -1,18 +1,21 @@
-package br.com.zup.proposta.cartao;
+package br.com.zup.proposta.renegociacao;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Embeddable
-public class Parcela {
+@Entity
+public class Renegociacao {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotBlank
     @Column(nullable = false)
-    private String idParcela;
+    private String idRenegociacao;
 
     @NotNull
     @Column(nullable = false)
@@ -27,18 +30,22 @@ public class Parcela {
     private LocalDateTime dataDeCriacao;
 
     @Deprecated
-    public Parcela() {
+    public Renegociacao() {
     }
 
-    public Parcela(@NotBlank String idParcela, @NotNull Integer quantidade, @NotNull BigDecimal valor, @NotNull LocalDateTime dataDeCriacao) {
-        this.idParcela = idParcela;
+    public Renegociacao(@NotBlank String idRenegociacao, @NotNull Integer quantidade, @NotNull BigDecimal valor, @NotNull LocalDateTime dataDeCriacao) {
+        this.idRenegociacao = idRenegociacao;
         this.quantidade = quantidade;
         this.valor = valor;
         this.dataDeCriacao = dataDeCriacao;
     }
 
-    public String getIdParcela() {
-        return idParcela;
+    public Long getId() {
+        return id;
+    }
+
+    public String getIdRenegociacao() {
+        return idRenegociacao;
     }
 
     public Integer getQuantidade() {

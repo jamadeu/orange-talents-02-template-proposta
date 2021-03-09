@@ -3,6 +3,7 @@ package br.com.zup.proposta.cartao;
 import br.com.zup.proposta.compartilhado.anotacoes.CpfOuCnpj;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class CartaoRequest {
 
@@ -13,10 +14,10 @@ public class CartaoRequest {
     @NotBlank
     private final String nome;
 
-    @NotBlank
+    @NotNull
     private final Long idProposta;
 
-    public CartaoRequest(@NotBlank String documento, @NotBlank String nome, @NotBlank Long idProposta) {
+    public CartaoRequest(@NotBlank String documento, @NotBlank String nome, @NotNull Long idProposta) {
         this.documento = documento;
         this.nome = nome;
         this.idProposta = idProposta;

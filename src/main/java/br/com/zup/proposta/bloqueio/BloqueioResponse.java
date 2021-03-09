@@ -1,4 +1,6 @@
-package br.com.zup.proposta.cartao;
+package br.com.zup.proposta.bloqueio;
+
+import br.com.zup.proposta.cartao.Cartao;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -19,11 +21,14 @@ public class BloqueioResponse {
     @NotNull
     private final Boolean ativo;
 
-    public BloqueioResponse(@NotBlank String idBloqueio, @NotNull LocalDateTime bloqueadoEm, @NotBlank String sistemaResponsavel, @NotNull Boolean ativo) {
+    private final Cartao cartao;
+
+    public BloqueioResponse(@NotBlank String idBloqueio, @NotNull LocalDateTime bloqueadoEm, @NotBlank String sistemaResponsavel, @NotNull Boolean ativo, Cartao cartao) {
         this.idBloqueio = idBloqueio;
         this.bloqueadoEm = bloqueadoEm;
         this.sistemaResponsavel = sistemaResponsavel;
         this.ativo = ativo;
+        this.cartao = cartao;
     }
 
     public Bloqueio toModel() {
@@ -31,7 +36,8 @@ public class BloqueioResponse {
                 idBloqueio,
                 bloqueadoEm,
                 sistemaResponsavel,
-                ativo
+                ativo,
+                cartao
         );
     }
 
