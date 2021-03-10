@@ -1,5 +1,6 @@
 package br.com.zup.proposta.cartao;
 
+import br.com.zup.proposta.aviso.AvisoRequest;
 import br.com.zup.proposta.bloqueio.BloqueioRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,4 +18,7 @@ public interface ClientCartao {
 
     @GetMapping("/{id}")
     CartaoResponse buscaCartaoPorId(@PathVariable String id);
+
+    @PostMapping("/{id}/avisos")
+    void criaAviso(@PathVariable String id, AvisoRequest request);
 }

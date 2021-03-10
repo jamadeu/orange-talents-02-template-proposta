@@ -1,12 +1,12 @@
 package br.com.zup.proposta.aviso;
 
 import br.com.zup.proposta.cartao.Cartao;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 public class Aviso {
@@ -26,6 +26,12 @@ public class Aviso {
     @ManyToOne
     private Cartao cartao;
 
+    private String ip;
+
+    private String userAgent;
+
+    private final LocalDateTime criadoEm = LocalDateTime.now();
+
     @Deprecated
     public Aviso() {
     }
@@ -34,6 +40,23 @@ public class Aviso {
         this.validoAte = validoAte;
         this.destino = destino;
         this.cartao = cartao;
+    }
+
+    public void adicionaInfosSolicitante(String ip, String userAgent) {
+        this.ip = ip;
+        this.userAgent = userAgent;
+    }
+
+    public LocalDateTime getCriadoEm() {
+        return criadoEm;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public String getUserAgent() {
+        return userAgent;
     }
 
     public Long getId() {

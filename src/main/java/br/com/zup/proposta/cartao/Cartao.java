@@ -92,6 +92,10 @@ public class Cartao {
         this.alteraStatus(StatusCartao.BLOQUEADO);
     }
 
+    public void adicionaAviso(Aviso aviso) {
+        this.avisos.add(aviso);
+    }
+
     public void alteraStatus(StatusCartao status) {
         this.status = status;
     }
