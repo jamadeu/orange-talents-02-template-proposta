@@ -15,7 +15,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @RestController
-@RequestMapping("/bloqueio")
+@RequestMapping("/api/bloqueio")
 public class BloqueioController {
 
     final Logger logger = LoggerFactory.getLogger(BloqueioController.class);
@@ -31,7 +31,8 @@ public class BloqueioController {
 
     @PostMapping("/{id}")
     @Transactional
-    public ResponseEntity<?> bloqueiaCartao(@PathVariable("id") Long idCartao, HttpServletRequest requestDetails, @RequestHeader("user-agent") String agent) {
+    public ResponseEntity<?> bloqueiaCartao(@PathVariable("id") Long idCartao, @RequestBody BloqueioRequest request,
+                                            HttpServletRequest requestDetails, @RequestHeader("user-agent") String agent) {
         logger.info("Busca cartao id={}", idCartao);
         Cartao cartao = em.find(Cartao.class, idCartao);
         if (cartao == null) {
@@ -40,8 +41,8 @@ public class BloqueioController {
         }
 
         try {
-            logger.info("Solicitando bloqueio do cartao id={}", idCartao);
-            clientCartao.bloquear(cartao.getNumero(), new BloqueioRequest("proposta"));
+            logger.info("Solicitando bloqueio do cartao id={}, sistema responsavel {}", idCartao, request.getSistemaResponsavel());
+            clientCartao.bloquear(cartao.getNumero(), request);
             logger.info("Cartao id={} bloqueado", idCartao);
             List<Bloqueio> bloqueios = clientCartao.buscaCartaoPorId(cartao.getNumero()).getBloqueios();
             Bloqueio bloqueio = bloqueios.get(bloqueios.size() - 1);

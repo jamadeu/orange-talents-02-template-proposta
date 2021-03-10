@@ -62,6 +62,9 @@ public class Cartao {
     @OneToMany(cascade = CascadeType.MERGE)
     private final List<Biometria> biometrias = new ArrayList<>();
 
+    @Enumerated
+    private StatusCartao status = StatusCartao.ATIVO;
+
     @Deprecated
     public Cartao() {
     }
@@ -86,6 +89,15 @@ public class Cartao {
 
     public void adicionaBloqueio(Bloqueio bloqueio) {
         this.bloqueios.add(bloqueio);
+        this.alteraStatus(StatusCartao.BLOQUEADO);
+    }
+
+    public void alteraStatus(StatusCartao status) {
+        this.status = status;
+    }
+
+    public StatusCartao getStatus() {
+        return status;
     }
 
     public Long getId() {
