@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 public class Cartao {
@@ -94,6 +95,19 @@ public class Cartao {
 
     public void adicionaAviso(Aviso aviso) {
         this.avisos.add(aviso);
+    }
+
+    public void adicionaCarteira(Carteira carteira) {
+        this.carteiras.add(carteira);
+    }
+
+    public boolean possuiCarteira(String emissor) {
+        for (Carteira c : carteiras) {
+            if (c.getEmissor().equals(emissor)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void alteraStatus(StatusCartao status) {

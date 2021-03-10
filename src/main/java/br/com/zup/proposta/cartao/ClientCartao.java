@@ -2,6 +2,7 @@ package br.com.zup.proposta.cartao;
 
 import br.com.zup.proposta.aviso.AvisoRequest;
 import br.com.zup.proposta.bloqueio.BloqueioRequest;
+import br.com.zup.proposta.carteira.CarteiraRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,4 +22,7 @@ public interface ClientCartao {
 
     @PostMapping("/{id}/avisos")
     void criaAviso(@PathVariable String id, AvisoRequest request);
+
+    @PostMapping("/{id}/carteiras")
+    void associarCarteira(@PathVariable String id, CarteiraRequest request);
 }

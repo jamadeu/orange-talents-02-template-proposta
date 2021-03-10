@@ -25,12 +25,12 @@ public class CarteiraResponse {
 
     private final Cartao cartao;
 
-    public CarteiraResponse(@NotBlank String idCarteira, @NotBlank @Email String email, @NotNull LocalDateTime associadaEm, @NotBlank String emissor, Cartao cartao) {
-        this.idCarteira = idCarteira;
-        this.email = email;
-        this.associadaEm = associadaEm;
-        this.emissor = emissor;
-        this.cartao = cartao;
+    public CarteiraResponse(Carteira carteira) {
+        this.idCarteira = carteira.getIdCarteira();
+        this.email = carteira.getEmail();
+        this.associadaEm = carteira.getAssociadaEm();
+        this.emissor = carteira.getEmissor();
+        this.cartao = carteira.getCartao();
     }
 
     public Carteira toModel() {
