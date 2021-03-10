@@ -33,6 +33,10 @@ public class Bloqueio {
     @ManyToOne
     private Cartao cartao;
 
+    private String ip;
+
+    private String userAgent;
+
     @Deprecated
     public Bloqueio() {
     }
@@ -43,6 +47,11 @@ public class Bloqueio {
         this.sistemaResponsavel = sistemaResponsavel;
         this.ativo = ativo;
         this.cartao = cartao;
+    }
+
+    public void adicionaInfosSolicitante(String ip, String userAgent) {
+        this.ip = ip;
+        this.userAgent = userAgent;
     }
 
     public Long getId() {
@@ -67,5 +76,13 @@ public class Bloqueio {
 
     public Boolean getAtivo() {
         return ativo;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public String getUserAgent() {
+        return userAgent;
     }
 }

@@ -84,6 +84,10 @@ public class Cartao {
         this.biometrias.add(biometria);
     }
 
+    public void adicionaBloqueio(Bloqueio bloqueio) {
+        this.bloqueios.add(bloqueio);
+    }
+
     public Long getId() {
         return id;
     }
