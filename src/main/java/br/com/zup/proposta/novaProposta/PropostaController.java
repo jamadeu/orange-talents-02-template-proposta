@@ -10,6 +10,8 @@ import br.com.zup.proposta.cartao.CartaoResponse;
 import br.com.zup.proposta.cartao.ClientCartao;
 import feign.FeignException;
 import feign.FeignException.UnprocessableEntity;
+import io.opentracing.Span;
+import io.opentracing.Tracer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +31,9 @@ import java.util.List;
 @RequestMapping("/api/proposta")
 class PropostaController {
 
-    final Logger logger = LoggerFactory.getLogger(PropostaController.class);
+    private final Logger logger = LoggerFactory.getLogger(PropostaController.class);
+    private final Tracer tracer;
+    private final Span span;
 
     private final List<Proposta> propostasPendenteCartao = new ArrayList<>();
 
@@ -39,9 +43,11 @@ class PropostaController {
     private final AnaliseCliente analiseCliente;
     private final ClientCartao clientCartao;
 
-    public PropostaController(PropostaRepository propostaRepository, AnaliseCliente analiseCliente, ClientCartao clientCartao) {
+    public PropostaController(PropostaRepository propostaRepository, AnaliseCliente analiseCliente, ClientCartao clientCartao, Tracer tracer) {
         this.analiseCliente = analiseCliente;
         this.clientCartao = clientCartao;
+        this.tracer = tracer;
+        this.span = tracer.activeSpan();
         propostasPendenteCartao.addAll(propostaRepository.findByStatusPropostaAndConcluido(StatusProposta.ELEGIVEL, false));
 
     }
@@ -50,6 +56,7 @@ class PropostaController {
     public ResponseEntity<PropostaResponse> buscaPorId(@PathVariable Long id) {
         Proposta proposta = em.find(Proposta.class, id);
         if (proposta == null) {
+            span.log("Cartao não localizado");
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(new PropostaResponse(proposta));
