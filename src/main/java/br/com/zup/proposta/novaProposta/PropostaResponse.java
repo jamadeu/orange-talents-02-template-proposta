@@ -1,5 +1,7 @@
 package br.com.zup.proposta.novaProposta;
 
+import org.springframework.security.crypto.encrypt.Encryptors;
+
 public class PropostaResponse {
 
     private final String documento;
@@ -11,7 +13,7 @@ public class PropostaResponse {
     private final String cartao;
 
     public PropostaResponse(Proposta proposta) {
-        this.documento = proposta.getDocumento();
+        this.documento = Encryptors.text("123123", "123123").decrypt(proposta.getDocumento());
         this.email = proposta.getEmail();
         this.nome = proposta.getNome();
         this.endereco = proposta.getEndereco();
