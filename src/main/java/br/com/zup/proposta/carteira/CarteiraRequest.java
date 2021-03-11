@@ -10,9 +10,9 @@ public class CarteiraRequest {
     private final String email;
 
     @NotBlank
-    private final String carteira;
+    private final TipoCarteira carteira;
 
-    public CarteiraRequest(@NotBlank @Email String email, @NotBlank String carteira) {
+    public CarteiraRequest(@NotBlank @Email String email, @NotBlank TipoCarteira carteira) {
         this.email = email;
         this.carteira = carteira;
     }
@@ -21,7 +21,7 @@ public class CarteiraRequest {
         return email;
     }
 
-    public String getCarteira() {
+    public TipoCarteira getCarteira() {
         return carteira;
     }
 }

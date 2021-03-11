@@ -21,7 +21,7 @@ public class CarteiraResponse {
     private final LocalDateTime associadaEm;
 
     @NotBlank
-    private final String emissor;
+    private final TipoCarteira emissor;
 
     private final Cartao cartao;
 
@@ -59,7 +59,7 @@ public class CarteiraResponse {
         return associadaEm;
     }
 
-    public String getEmissor() {
+    public TipoCarteira getEmissor() {
         return emissor;
     }
 }

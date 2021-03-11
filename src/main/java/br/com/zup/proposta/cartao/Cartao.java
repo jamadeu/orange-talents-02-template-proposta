@@ -4,6 +4,7 @@ import br.com.zup.proposta.aviso.Aviso;
 import br.com.zup.proposta.biometria.Biometria;
 import br.com.zup.proposta.bloqueio.Bloqueio;
 import br.com.zup.proposta.carteira.Carteira;
+import br.com.zup.proposta.carteira.TipoCarteira;
 import br.com.zup.proposta.novaProposta.Proposta;
 import br.com.zup.proposta.parcela.Parcela;
 import br.com.zup.proposta.renegociacao.Renegociacao;
@@ -101,7 +102,7 @@ public class Cartao {
         this.carteiras.add(carteira);
     }
 
-    public boolean possuiCarteira(String emissor) {
+    public boolean possuiCarteira(TipoCarteira emissor) {
         for (Carteira c : carteiras) {
             if (c.getEmissor().equals(emissor)) {
                 return true;

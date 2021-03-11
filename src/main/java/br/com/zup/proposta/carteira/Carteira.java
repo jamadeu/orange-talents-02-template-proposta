@@ -1,7 +1,6 @@
 package br.com.zup.proposta.carteira;
 
 import br.com.zup.proposta.cartao.Cartao;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -26,12 +25,13 @@ public class Carteira {
     private String email;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime associadaEm;
 
     @NotBlank
     @Column(nullable = false)
-    private String emissor;
+    @Enumerated
+    private TipoCarteira emissor;
 
     @ManyToOne
     private Cartao cartao;
@@ -40,7 +40,7 @@ public class Carteira {
     public Carteira() {
     }
 
-    public Carteira(@NotBlank String idCarteira, @NotBlank @Email String email, @NotNull LocalDateTime associadaEm, @NotBlank String emissor, Cartao cartao) {
+    public Carteira(@NotBlank String idCarteira, @NotBlank @Email String email, @NotNull LocalDateTime associadaEm, @NotBlank TipoCarteira emissor, Cartao cartao) {
         this.idCarteira = idCarteira;
         this.email = email;
         this.associadaEm = associadaEm;
@@ -68,7 +68,7 @@ public class Carteira {
         return associadaEm;
     }
 
-    public String getEmissor() {
+    public TipoCarteira getEmissor() {
         return emissor;
     }
 }
