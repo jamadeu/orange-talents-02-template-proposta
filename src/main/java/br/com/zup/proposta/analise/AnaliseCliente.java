@@ -3,7 +3,7 @@ package br.com.zup.proposta.analise;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 
-@FeignClient(name = "analise", url = "${API_ANALISE}")
+@FeignClient(name = "analise", url = "${ANALISE}")
 public interface AnaliseCliente {
 
     @PostMapping

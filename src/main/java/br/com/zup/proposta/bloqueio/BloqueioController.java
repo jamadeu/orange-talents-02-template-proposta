@@ -1,7 +1,7 @@
 package br.com.zup.proposta.bloqueio;
 
 import br.com.zup.proposta.cartao.Cartao;
-import br.com.zup.proposta.cartao.ClientCartao;
+import br.com.zup.proposta.cartao.ClienteCartao;
 import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,10 +23,10 @@ public class BloqueioController {
     @PersistenceContext
     private EntityManager em;
 
-    private final ClientCartao clientCartao;
+    private final ClienteCartao clienteCartao;
 
-    public BloqueioController(ClientCartao clientCartao) {
-        this.clientCartao = clientCartao;
+    public BloqueioController(ClienteCartao clienteCartao) {
+        this.clienteCartao = clienteCartao;
     }
 
     @PostMapping("/{id}")
@@ -42,9 +42,9 @@ public class BloqueioController {
 
         try {
             logger.info("Solicitando bloqueio do cartao id={}, sistema responsavel {}", idCartao, request.getSistemaResponsavel());
-            clientCartao.bloquear(cartao.getNumero(), request);
+            clienteCartao.bloquear(cartao.getNumero(), request);
             logger.info("Cartao id={} bloqueado", idCartao);
-            List<Bloqueio> bloqueios = clientCartao.buscaCartaoPorId(cartao.getNumero()).getBloqueios();
+            List<Bloqueio> bloqueios = clienteCartao.buscaCartaoPorId(cartao.getNumero()).getBloqueios();
             Bloqueio bloqueio = bloqueios.get(bloqueios.size() - 1);
             logger.info("Bloqueio gerado {}", bloqueio);
             bloqueio.adicionaInfosSolicitante(requestDetails.getRemoteAddr(), agent);

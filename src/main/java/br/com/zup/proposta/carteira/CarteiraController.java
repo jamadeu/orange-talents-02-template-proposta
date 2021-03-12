@@ -1,7 +1,7 @@
 package br.com.zup.proposta.carteira;
 
 import br.com.zup.proposta.cartao.Cartao;
-import br.com.zup.proposta.cartao.ClientCartao;
+import br.com.zup.proposta.cartao.ClienteCartao;
 import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,10 +24,10 @@ public class CarteiraController {
     @PersistenceContext
     private EntityManager em;
 
-    private final ClientCartao clientCartao;
+    private final ClienteCartao clienteCartao;
 
-    public CarteiraController(ClientCartao clientCartao) {
-        this.clientCartao = clientCartao;
+    public CarteiraController(ClienteCartao clienteCartao) {
+        this.clienteCartao = clienteCartao;
     }
 
     @GetMapping("/{id}")
@@ -55,8 +55,8 @@ public class CarteiraController {
         Carteira carteira;
         try {
             logger.info("Associando carteira {} para o cartao id={}", request.getCarteira(), cartao.getId());
-            clientCartao.associarCarteira(cartao.getNumero(), request);
-            List<Carteira> carteiras = clientCartao.buscaCartaoPorId(cartao.getNumero()).getCarteiras();
+            clienteCartao.associarCarteira(cartao.getNumero(), request);
+            List<Carteira> carteiras = clienteCartao.buscaCartaoPorId(cartao.getNumero()).getCarteiras();
             carteira = carteiras.get(carteiras.size() - 1);
             em.persist(carteira);
             logger.info("Carteira id = {} persistida", carteira.getId());

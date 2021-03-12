@@ -7,7 +7,7 @@ import br.com.zup.proposta.analise.TipoStatus;
 import br.com.zup.proposta.cartao.Cartao;
 import br.com.zup.proposta.cartao.CartaoRequest;
 import br.com.zup.proposta.cartao.CartaoResponse;
-import br.com.zup.proposta.cartao.ClientCartao;
+import br.com.zup.proposta.cartao.ClienteCartao;
 import feign.FeignException;
 import feign.FeignException.UnprocessableEntity;
 import io.opentracing.Span;
@@ -41,11 +41,11 @@ class PropostaController {
     private EntityManager em;
 
     private final AnaliseCliente analiseCliente;
-    private final ClientCartao clientCartao;
+    private final ClienteCartao clienteCartao;
 
-    public PropostaController(PropostaRepository propostaRepository, AnaliseCliente analiseCliente, ClientCartao clientCartao, Tracer tracer) {
+    public PropostaController(PropostaRepository propostaRepository, AnaliseCliente analiseCliente, ClienteCartao clienteCartao, Tracer tracer) {
         this.analiseCliente = analiseCliente;
-        this.clientCartao = clientCartao;
+        this.clienteCartao = clienteCartao;
         this.tracer = tracer;
         this.span = tracer.activeSpan();
         propostasPendenteCartao.addAll(propostaRepository.findByStatusPropostaAndConcluido(StatusProposta.ELEGIVEL, false));
@@ -95,7 +95,7 @@ class PropostaController {
             logger.info("Solicitando cartao para a proposta {}", proposta.getId());
             CartaoRequest cartaoRequest = new CartaoRequest(proposta.getDocumento(), proposta.getNome(), proposta.getId());
             try {
-                CartaoResponse cartaoResponse = clientCartao.solicita(cartaoRequest);
+                CartaoResponse cartaoResponse = clienteCartao.solicita(cartaoRequest);
                 logger.info("Cartao para a proposta {} gerado", proposta.getId());
                 logger.info("CartaoResponse {}", cartaoResponse.toString());
                 Cartao cartao = cartaoResponse.toModel(em);

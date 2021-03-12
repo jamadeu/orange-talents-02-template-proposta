@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Profile(value = "test")
 public class ApiCartoesFake {
 
-    @PostMapping("/api/cartoes-fake")
+    @PostMapping("/api/fake/cartoes")
     public ResponseEntity<CartaoResponse> cria(@RequestBody @Valid CartaoRequest request) {
         CartaoResponse cartaoResponse = new CartaoResponse(
                 "5312995574366723",

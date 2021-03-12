@@ -1,7 +1,7 @@
 package br.com.zup.proposta.aviso;
 
 import br.com.zup.proposta.cartao.Cartao;
-import br.com.zup.proposta.cartao.ClientCartao;
+import br.com.zup.proposta.cartao.ClienteCartao;
 import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,10 +22,10 @@ public class AvisoController {
     @PersistenceContext
     private EntityManager em;
 
-    private final ClientCartao clientCartao;
+    private final ClienteCartao clienteCartao;
 
-    public AvisoController(ClientCartao clientCartao) {
-        this.clientCartao = clientCartao;
+    public AvisoController(ClienteCartao clienteCartao) {
+        this.clienteCartao = clienteCartao;
     }
 
     @PostMapping("/{id}")
@@ -40,8 +40,8 @@ public class AvisoController {
 
         try {
             logger.info("Gerando aviso de viagem para o cartao id={}", cartao.getId());
-            clientCartao.criaAviso(cartao.getNumero(), request);
-            List<Aviso> avisos = clientCartao.buscaCartaoPorId(cartao.getNumero()).getAvisos();
+            clienteCartao.criaAviso(cartao.getNumero(), request);
+            List<Aviso> avisos = clienteCartao.buscaCartaoPorId(cartao.getNumero()).getAvisos();
             Aviso aviso = avisos.get(avisos.size() - 1);
             logger.info("Aviso criado {}", aviso);
             aviso.adicionaInfosSolicitante(requestDetails.getRemoteAddr(), agent);

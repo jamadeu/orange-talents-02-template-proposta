@@ -28,8 +28,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
         properties = {
-                "API_ANALISE=http://localhost:8080/api/analise-fake",
-                "API_CARTOES=http://localhost:8080/api/cartoes-fake"
+                "API_ANALISE=http://localhost:8080/api/fake/analise",
+                "API_CARTOES=http://localhost:8080/api/fake/cartoes"
         })
 @AutoConfigureTestDatabase
 @AutoConfigureMockMvc

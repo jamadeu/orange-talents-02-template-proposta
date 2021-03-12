@@ -1,16 +1,6 @@
 version: '3'
 services:
 
-  mysql:
-    image: mysql:latest
-    container_name: mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql-volume:/var/lib/mysql
-
   zookeeper:
     image: "confluentinc/cp-zookeeper:5.2.1"
     environment:
@@ -102,6 +92,31 @@ services:
       LOG_LEVEL: INFO
       KAFKA_HOST: "kafka:29092"
       JAEGER_ENDPOINT: http://jaeger:14268/api/traces
+
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-volume:/var/lib/mysql
+
+  proposta:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    image: java:11
+    container_name: proposta
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    environment:
+      ANALISE: http://analise:9999
+      CARTOES: http://contas:8888
 
   jaeger:
     image: jaegertracing/all-in-one
