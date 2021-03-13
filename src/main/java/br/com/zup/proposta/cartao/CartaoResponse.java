@@ -11,6 +11,7 @@ import br.com.zup.proposta.vencimento.Vencimento;
 import br.com.zup.proposta.vencimento.VencimentoResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
@@ -48,7 +49,7 @@ public class CartaoResponse {
     }
 
     public Cartao toModel(EntityManager em) {
-        Proposta proposta = em.find(Proposta.class, Long.parseLong(idProposta, 10));
+        Proposta proposta = em.find(Proposta.class, Long.parseLong(idProposta));
         if (proposta == null) {
             logger.error("Proposta não localizada, id = {}", idProposta);
             throw new RuntimeException();
@@ -64,7 +65,7 @@ public class CartaoResponse {
             em.persist(vencimento);
         }
         return new Cartao(
-                id,
+                this.id,
                 emitidoEm,
                 titular,
                 bloqueios,

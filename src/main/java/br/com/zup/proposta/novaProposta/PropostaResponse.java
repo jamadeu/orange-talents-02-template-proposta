@@ -13,7 +13,7 @@ public class PropostaResponse {
     private final String cartao;
 
     public PropostaResponse(Proposta proposta) {
-        this.documento = Encryptors.text("123123", "123123").decrypt(proposta.getDocumento());
+        this.documento = proposta.getDocumento();
         this.email = proposta.getEmail();
         this.nome = proposta.getNome();
         this.endereco = proposta.getEndereco();

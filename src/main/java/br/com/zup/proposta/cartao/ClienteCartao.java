@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-@FeignClient(name = "clienteCartao", url = "${CARTOES}")
+@FeignClient(name = "clienteCartao", url = "${api.cartoes}")
 public interface ClienteCartao {
 
     @PostMapping

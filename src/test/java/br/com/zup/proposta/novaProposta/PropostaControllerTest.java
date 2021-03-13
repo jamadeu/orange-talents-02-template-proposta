@@ -1,6 +1,7 @@
 package br.com.zup.proposta.novaProposta;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,29 +13,26 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
-        properties = {
-                "API_ANALISE=http://localhost:8080/api/fake/analise",
-                "API_CARTOES=http://localhost:8080/api/fake/cartoes"
-        })
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureTestDatabase
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @ActiveProfiles("test")
+@Transactional
 class PropostaControllerTest {
 
     private final String URL_API_PROPOSTA = "/api/proposta";
@@ -48,11 +46,20 @@ class PropostaControllerTest {
     @Autowired
     private PropostaRepository propostaRepository;
 
+    @Autowired
+    private EntityManager manager;
+
+    @BeforeEach
+    void setup() {
+        propostaRepository.deleteAll();
+    }
+
     @Test
+    @WithMockUser
     @DisplayName("retorna status 201, Header Location preenchido com a URL da nova proposta e a nova proposta com cpf persistida no banco em caso de sucesso.")
     void metodoCria_retorna201_EmCasoDeSucessoComCPF() throws Exception {
         NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
-                "041.112.040-90",
+                "948.202.540-73",
                 "email@test.com",
                 "Nome",
                 new EnderecoRequest(
@@ -67,15 +74,17 @@ class PropostaControllerTest {
 
         MvcResult mvcResult = performPost(novaPropostaRequest, 201);
 
-        Proposta proposta = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento()).orElseThrow();
-        String locationEsperado = "http://localhost:8080" + URL_API_PROPOSTA + "/" + proposta.getId();
         String location = mvcResult.getResponse().getHeader("Location");
+        assertNotNull(location);
 
-        assertEquals(locationEsperado, location);
+        Long idProposta = Long.parseLong(location.substring(location.length() - 1));
+        Proposta proposta = propostaRepository.findById(idProposta).orElseThrow();
+
         assertEquals(proposta.getEmail(), novaPropostaRequest.getEmail());
     }
 
     @Test
+    @WithMockUser
     @DisplayName("Retorna status 201, Header Location preenchido com a URL da nova proposta e a nova proposta com cnpj persistida no banco em caso de sucesso.")
     void metodoCria_Retorna201_EmCasoDeSucessoComCNPJ() throws Exception {
         NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
@@ -94,15 +103,17 @@ class PropostaControllerTest {
 
         MvcResult mvcResult = performPost(novaPropostaRequest, 201);
 
-        Proposta proposta = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento()).orElseThrow();
-        String locationEsperado = "http://localhost:8080" + URL_API_PROPOSTA + "/" + proposta.getId();
         String location = mvcResult.getResponse().getHeader("Location");
+        assertNotNull(location);
 
-        assertEquals(locationEsperado, location);
+        Long idProposta = Long.parseLong(location.substring(location.length() - 1));
+        Proposta proposta = propostaRepository.findById(idProposta).orElseThrow();
+
         assertEquals(proposta.getEmail(), novaPropostaRequest.getEmail());
     }
 
     @DisplayName("Retorna status 400 quando o documento é invalido, nulo ou vazio.")
+    @WithMockUser
     @ParameterizedTest
     @NullSource
     @EmptySource
@@ -124,11 +135,12 @@ class PropostaControllerTest {
 
         performPost(novaPropostaRequest, 400);
 
-        Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
+        Optional<Proposta> propostaOptional = propostaRepository.findByEmail(novaPropostaRequest.getEmail());
 
         assertTrue(propostaOptional.isEmpty());
     }
 
+    @WithMockUser
     @ParameterizedTest
     @NullSource
     @EmptySource
@@ -151,11 +163,12 @@ class PropostaControllerTest {
 
         performPost(novaPropostaRequest, 400);
 
-        Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
+        Optional<Proposta> propostaOptional = propostaRepository.findByEmail(novaPropostaRequest.getEmail());
 
         assertTrue(propostaOptional.isEmpty());
     }
 
+    @WithMockUser
     @ParameterizedTest
     @NullSource
     @EmptySource
@@ -177,11 +190,12 @@ class PropostaControllerTest {
 
         performPost(novaPropostaRequest, 400);
 
-        Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
+        Optional<Proposta> propostaOptional = propostaRepository.findByEmail(novaPropostaRequest.getEmail());
 
         assertTrue(propostaOptional.isEmpty());
     }
 
+    @WithMockUser
     @Test
     @DisplayName("Retorna status 400 quando o endereco é nulo.")
     void metodoCria_Retorna400_QuandoEnderecoNulo() throws Exception {
@@ -195,11 +209,12 @@ class PropostaControllerTest {
 
         performPost(novaPropostaRequest, 400);
 
-        Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
+        Optional<Proposta> propostaOptional = propostaRepository.findByEmail(novaPropostaRequest.getEmail());
 
         assertTrue(propostaOptional.isEmpty());
     }
 
+    @WithMockUser
     @Test
     @DisplayName("Retorna status 400 quando o salario é nulo.")
     void metodoCria_Retorna400_QuandoSalarioNulo() throws Exception {
@@ -219,11 +234,12 @@ class PropostaControllerTest {
 
         performPost(novaPropostaRequest, 400);
 
-        Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
+        Optional<Proposta> propostaOptional = propostaRepository.findByEmail(novaPropostaRequest.getEmail());
 
         assertTrue(propostaOptional.isEmpty());
     }
 
+    @WithMockUser
     @DisplayName("Retorna status 400 quando o salario é negativo.")
     @ParameterizedTest
     @ValueSource(ints = {-1, -10})
@@ -244,11 +260,12 @@ class PropostaControllerTest {
 
         performPost(novaPropostaRequest, 400);
 
-        Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
+        Optional<Proposta> propostaOptional = propostaRepository.findByEmail(novaPropostaRequest.getEmail());
 
         assertTrue(propostaOptional.isEmpty());
     }
 
+    @WithMockUser
     @Test
     @DisplayName("Retorna status 422 quando o solicitante ja possui uma proposta.")
     void metodoCria_Retorna422_QuandoSolicitanteJaPossuiProposta() throws Exception {
@@ -273,6 +290,7 @@ class PropostaControllerTest {
         assertEquals(errorMessage, "{\"mensagens\":[\"Ja existe uma proposta para este cliente\"]}");
     }
 
+    @WithMockUser
     @Test
     @DisplayName("Quando a analise retornar 'SEM_RESTRICAO' o status da proposta deve ser 'ELEGIVEL'")
     void metodoCria_StatusPropostaElegivel_QuandoClienteNaoPossuirRestricao() throws Exception {
@@ -290,15 +308,17 @@ class PropostaControllerTest {
                 new BigDecimal(2000)
         );
 
-        performPost(novaPropostaRequest, 201);
-        ;
-
-        Proposta proposta = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento()).orElseThrow();
+        MvcResult mvcResult = performPost(novaPropostaRequest, 201);
+        String location = mvcResult.getResponse().getHeader("Location");
+        assertNotNull(location);
+        long idProposta = Long.parseLong(location.substring(location.length() - 1));
+        Proposta proposta = propostaRepository.findById(idProposta).orElseThrow();
 
         assertEquals(proposta.getEmail(), novaPropostaRequest.getEmail());
         assertEquals(proposta.getStatusProposta(), StatusProposta.ELEGIVEL);
     }
 
+    @WithMockUser
     @Test
     @DisplayName("Quando a analise retornar 'COM_RESTRICAO' o status da proposta deve ser 'NAO_ELEGIVEL'")
     void metodoCria_StatusPropostaNaoElegivel_QuandoClientePossuirRestricao() throws Exception {
@@ -316,14 +336,17 @@ class PropostaControllerTest {
                 new BigDecimal(2000)
         );
 
-        performPost(novaPropostaRequest, 201);
-
-        Proposta proposta = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento()).orElseThrow();
+        MvcResult mvcResult = performPost(novaPropostaRequest, 201);
+        String location = mvcResult.getResponse().getHeader("Location");
+        assertNotNull(location);
+        long idProposta = Long.parseLong(location.substring(location.length() - 1));
+        Proposta proposta = propostaRepository.findById(idProposta).orElseThrow();
 
         assertEquals(proposta.getEmail(), novaPropostaRequest.getEmail());
         assertEquals(proposta.getStatusProposta(), StatusProposta.NAO_ELEGIVEL);
     }
 
+    @WithMockUser
     @Test
     @DisplayName("Retorna status 200 e um Json com os dados da proposta")
     void metodoBuscaPorId_Retorna200() throws Exception {
@@ -351,22 +374,25 @@ class PropostaControllerTest {
                 "\"cidade\":\"Cidade\"," +
                 "\"estado\":\"Estado\"," +
                 "\"cep\":\"cep\"}," +
-                "\"salario\":\"2000.00\"," +
+                "\"salario\":\"2000\"," +
                 "\"status\":\"null\"," +
                 "\"cartao\":\"Nao possui cartao\"}";
 
-        MvcResult mvcResult = performGet(200, URL_API_PROPOSTA + "/" + proposta.getId());
+        String url = URL_API_PROPOSTA + "/" + proposta.getId();
+        MvcResult mvcResult = performGet(200, url);
 
         String body = mvcResult.getResponse().getContentAsString();
         assertEquals(expectedBody, body);
     }
 
+    @WithMockUser
     @Test
     @DisplayName("Retorna status 400 quando a proposta não existe")
     void metodoBuscaPorId_Retorna400() throws Exception {
         performGet(404, URL_API_PROPOSTA + new Random().nextLong());
     }
 
+    @WithMockUser
     @ParameterizedTest
     @NullSource
     @EmptySource
@@ -388,11 +414,12 @@ class PropostaControllerTest {
 
         performPost(novaPropostaRequest, 400);
 
-        Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
+        Optional<Proposta> propostaOptional = propostaRepository.findByEmail(novaPropostaRequest.getEmail());
 
         assertTrue(propostaOptional.isEmpty());
     }
 
+    @WithMockUser
     @ParameterizedTest
     @NullSource
     @EmptySource
@@ -414,11 +441,12 @@ class PropostaControllerTest {
 
         performPost(novaPropostaRequest, 400);
 
-        Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
+        Optional<Proposta> propostaOptional = propostaRepository.findByEmail(novaPropostaRequest.getEmail());
 
         assertTrue(propostaOptional.isEmpty());
     }
 
+    @WithMockUser
     @ParameterizedTest
     @NullSource
     @EmptySource
@@ -440,11 +468,12 @@ class PropostaControllerTest {
 
         performPost(novaPropostaRequest, 400);
 
-        Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
+        Optional<Proposta> propostaOptional = propostaRepository.findByEmail(novaPropostaRequest.getEmail());
 
         assertTrue(propostaOptional.isEmpty());
     }
 
+    @WithMockUser
     @ParameterizedTest
     @NullSource
     @EmptySource
@@ -466,11 +495,12 @@ class PropostaControllerTest {
 
         performPost(novaPropostaRequest, 400);
 
-        Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
+        Optional<Proposta> propostaOptional = propostaRepository.findByEmail(novaPropostaRequest.getEmail());
 
         assertTrue(propostaOptional.isEmpty());
     }
 
+    @WithMockUser
     @ParameterizedTest
     @NullSource
     @EmptySource
@@ -492,11 +522,12 @@ class PropostaControllerTest {
 
         performPost(novaPropostaRequest, 400);
 
-        Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
+        Optional<Proposta> propostaOptional = propostaRepository.findByEmail(novaPropostaRequest.getEmail());
 
         assertTrue(propostaOptional.isEmpty());
     }
 
+    @WithMockUser
     @ParameterizedTest
     @NullSource
     @EmptySource
@@ -518,34 +549,9 @@ class PropostaControllerTest {
 
         performPost(novaPropostaRequest, 400);
 
-        Optional<Proposta> propostaOptional = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento());
+        Optional<Proposta> propostaOptional = propostaRepository.findByEmail(novaPropostaRequest.getEmail());
 
         assertTrue(propostaOptional.isEmpty());
-    }
-
-    @Test
-    @DisplayName("Cartao gerado e adicionado a proposta")
-    void cartaoGerado() throws Exception {
-        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
-                "041.112.040-90",
-                "email@test.com",
-                "Nome",
-                new EnderecoRequest(
-                        "Rua",
-                        "100",
-                        "Bairro",
-                        "Cidade",
-                        "Estado",
-                        "cep"),
-                new BigDecimal(2000)
-        );
-
-        MvcResult mvcResult = performPost(novaPropostaRequest, 201);
-        Thread.sleep(2000);
-        Proposta proposta = propostaRepository.findByDocumento(novaPropostaRequest.getDocumento()).orElseThrow();
-
-        assertEquals(proposta.getEmail(), novaPropostaRequest.getEmail());
-        assertNotNull(proposta.getCartao());
     }
 
     private MvcResult performPost(NovaPropostaRequest request, int status) throws Exception {

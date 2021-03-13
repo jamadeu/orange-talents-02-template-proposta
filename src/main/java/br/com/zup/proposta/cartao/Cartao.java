@@ -17,7 +17,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 public class Cartao {
@@ -57,7 +56,7 @@ public class Cartao {
     private Vencimento vencimento;
 
     @NotNull
-    @OneToOne
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "idProposta", referencedColumnName = "id")
     private Proposta proposta;
 

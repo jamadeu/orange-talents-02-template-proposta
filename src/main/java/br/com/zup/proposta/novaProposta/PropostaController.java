@@ -16,16 +16,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/proposta")
@@ -42,37 +43,40 @@ class PropostaController {
 
     private final AnaliseCliente analiseCliente;
     private final ClienteCartao clienteCartao;
+    private final PropostaRepository propostaRepository;
 
     public PropostaController(PropostaRepository propostaRepository, AnaliseCliente analiseCliente, ClienteCartao clienteCartao, Tracer tracer) {
         this.analiseCliente = analiseCliente;
         this.clienteCartao = clienteCartao;
         this.tracer = tracer;
         this.span = tracer.activeSpan();
+        this.propostaRepository = propostaRepository;
         propostasPendenteCartao.addAll(propostaRepository.findByStatusPropostaAndConcluido(StatusProposta.ELEGIVEL, false));
-
     }
 
     @GetMapping("/{id}")
+    @Transactional(readOnly = true)
     public ResponseEntity<PropostaResponse> buscaPorId(@PathVariable Long id) {
-        Proposta proposta = em.find(Proposta.class, id);
-        if (proposta == null) {
+        Optional<Proposta> optionalProposta = propostaRepository.findById(id);
+        if (optionalProposta.isEmpty()) {
             span.log("Cartao não localizado");
             return ResponseEntity.notFound().build();
         }
+        Proposta proposta = optionalProposta.get();
         return ResponseEntity.ok(new PropostaResponse(proposta));
     }
 
     @PostMapping
     @Transactional
-    public ResponseEntity<?> cria(@RequestBody @Valid NovaPropostaRequest novaPropostaRequest, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<?> cria(@RequestBody @Valid NovaPropostaRequest novaPropostaRequest) {
         Proposta proposta = novaPropostaRequest.toModel();
-        logger.info("NovaPropostaRequest para Proposta ok");
+        logger.info("NovaPropostaRequest para Proposta ok {}", proposta.getDocumento());
+        propostaRepository.save(proposta);
         AnaliseResponse analiseResponse;
         try {
             analiseResponse = analiseCliente.analise(
                     new AnaliseRequest(proposta.getDocumento(), proposta.getNome(), String.valueOf(proposta.getId())));
             propostasPendenteCartao.add(proposta);
-            em.persist(proposta);
             logger.info("Proposta id = {}, pendente cartao", proposta.getId());
         } catch (UnprocessableEntity e) {
             logger.info("Status code da analise {}", e.status());
@@ -81,9 +85,9 @@ class PropostaController {
         }
         logger.info("Resultado da analise, cliente {}.", analiseResponse.getResultadoSolicitacao());
         proposta.alteraStatus(analiseResponse.getResultadoSolicitacao());
-        em.merge(proposta);
-        logger.info("Proposta {}.", proposta.getStatusProposta());
-        URI uri = uriBuilder.path("/api/proposta/{id}").port(8080).buildAndExpand(proposta.getId()).toUri();
+        propostaRepository.save(proposta);
+        logger.info("Proposta id= {} - {}.", proposta.getId(), proposta.getStatusProposta());
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(proposta.getId()).toUri();
         return ResponseEntity.created(uri).build();
     }
 

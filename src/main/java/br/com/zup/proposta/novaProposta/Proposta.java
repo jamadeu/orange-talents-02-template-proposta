@@ -3,6 +3,8 @@ package br.com.zup.proposta.novaProposta;
 import br.com.zup.proposta.analise.TipoStatus;
 import br.com.zup.proposta.cartao.Cartao;
 import br.com.zup.proposta.compartilhado.anotacoes.CpfOuCnpj;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.encrypt.Encryptors;
 
 import javax.persistence.*;
@@ -47,7 +49,7 @@ public class Proposta {
     @Enumerated(EnumType.STRING)
     private StatusProposta statusProposta;
 
-    @OneToOne(mappedBy = "proposta")
+    @OneToOne(mappedBy = "proposta", cascade = CascadeType.ALL)
     private Cartao cartao;
 
     private Boolean concluido;
@@ -59,7 +61,7 @@ public class Proposta {
     }
 
     public Proposta(@NotBlank String documento, @NotBlank @Email String email, @NotBlank String nome, @NotNull Endereco endereco, @NotNull @Positive BigDecimal salario) {
-        this.documento = Encryptors.text("123123", "123123").encrypt(documento);
+        this.documento = documento;
         this.email = email;
         this.nome = nome;
         this.endereco = endereco;
@@ -79,7 +81,7 @@ public class Proposta {
     }
 
     public String getDocumento() {
-        return Encryptors.text("123123", "123123").decrypt(documento);
+        return documento;
     }
 
     public String getNome() {
