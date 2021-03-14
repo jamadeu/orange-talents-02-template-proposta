@@ -16,7 +16,7 @@
 	<properties>
 		<java.version>11</java.version>
 		<ch.qos.logback.version>1.2.3</ch.qos.logback.version>
-		<spring-cloud.version>Hoxton.SR10</spring-cloud.version>
+		<spring-cloud.version>Hoxton.SR8</spring-cloud.version>
 	</properties>
 	<dependencies>
 		<dependency>
