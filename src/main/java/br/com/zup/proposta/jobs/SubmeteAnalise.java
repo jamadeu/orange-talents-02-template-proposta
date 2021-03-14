@@ -10,22 +10,26 @@ import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
+@Component
 public class SubmeteAnalise {
 
     private final Logger logger = LoggerFactory.getLogger(SubmeteAnalise.class);
 
     private final AnaliseCliente analiseCliente;
     private final PropostaRepository propostaRepository;
-    private final List<Proposta> propostasPendentes = new ArrayList<>();
+
+    private final Set<Proposta> propostasPendentes = new HashSet<>();
 
     public SubmeteAnalise(AnaliseCliente analiseCliente, PropostaRepository propostaRepository) {
         this.analiseCliente = analiseCliente;
         this.propostaRepository = propostaRepository;
+        propostasPendentes.addAll(propostaRepository.findByStatusProposta(StatusProposta.PENDENTE));
     }
 
     @Scheduled(fixedDelay = 10000)

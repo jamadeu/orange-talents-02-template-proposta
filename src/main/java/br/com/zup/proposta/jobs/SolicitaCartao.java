@@ -7,11 +7,13 @@ import br.com.zup.proposta.novaProposta.StatusProposta;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class SolicitaCartao {
 
     //TODO refatorar

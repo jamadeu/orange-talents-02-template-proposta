@@ -1,4 +1,4 @@
-package br.com.zup.proposta.novaProposta;
+package br.com.zup.proposta.fakes;
 
 import br.com.zup.proposta.analise.AnaliseRequest;
 import br.com.zup.proposta.analise.AnaliseResponse;

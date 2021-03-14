@@ -1,4 +1,4 @@
-package br.com.zup.proposta.novaProposta;
+package br.com.zup.proposta.fakes;
 
 import br.com.zup.proposta.cartao.CartaoRequest;
 import br.com.zup.proposta.cartao.CriaCartaoResponse;
