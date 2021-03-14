@@ -1,4 +1,4 @@
-package br.com.zup.proposta.bloqueio;
+package br.com.zup.proposta.cartao.bloqueio;
 
 import javax.validation.constraints.NotBlank;
 

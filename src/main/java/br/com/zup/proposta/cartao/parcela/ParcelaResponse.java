@@ -1,45 +1,29 @@
-package br.com.zup.proposta.parcela;
+package br.com.zup.proposta.cartao.parcela;
 
 import br.com.zup.proposta.cartao.Cartao;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Entity
-public class Parcela {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class ParcelaResponse {
 
     @NotBlank
-    @Column(nullable = false)
-    private String idParcela;
+    private final String idParcela;
 
     @NotNull
-    @Column(nullable = false)
-    private Integer quantidade;
+    private final Integer quantidade;
 
     @NotNull
-    @Column(nullable = false)
-    private BigDecimal valor;
+    private final BigDecimal valor;
 
     @NotNull
-    @Column(nullable = false)
-    private LocalDateTime dataDeCriacao;
+    private final LocalDateTime dataDeCriacao;
 
-    @ManyToOne
-    private Cartao cartao;
+    private final Cartao cartao;
 
-    @Deprecated
-    public Parcela() {
-    }
-
-    public Parcela(@NotBlank String idParcela, @NotNull Integer quantidade, @NotNull BigDecimal valor, @NotNull LocalDateTime dataDeCriacao, Cartao cartao) {
+    public ParcelaResponse(@NotBlank String idParcela, @NotNull Integer quantidade, @NotNull BigDecimal valor, @NotNull LocalDateTime dataDeCriacao, Cartao cartao) {
         this.idParcela = idParcela;
         this.quantidade = quantidade;
         this.valor = valor;
@@ -47,8 +31,14 @@ public class Parcela {
         this.cartao = cartao;
     }
 
-    public Long getId() {
-        return id;
+    public Parcela toModel() {
+        return new Parcela(
+                idParcela,
+                quantidade,
+                valor,
+                dataDeCriacao,
+                cartao
+        );
     }
 
     public Cartao getCartao() {
@@ -70,6 +60,4 @@ public class Parcela {
     public LocalDateTime getDataDeCriacao() {
         return dataDeCriacao;
     }
-
-
 }

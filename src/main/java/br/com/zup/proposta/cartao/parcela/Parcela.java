@@ -1,29 +1,44 @@
-package br.com.zup.proposta.parcela;
+package br.com.zup.proposta.cartao.parcela;
 
 import br.com.zup.proposta.cartao.Cartao;
 
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public class ParcelaResponse {
+@Entity
+public class Parcela {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @NotBlank
-    private final String idParcela;
+    @Column(nullable = false)
+    private String idParcela;
 
     @NotNull
-    private final Integer quantidade;
+    @Column(nullable = false)
+    private Integer quantidade;
 
     @NotNull
-    private final BigDecimal valor;
+    @Column(nullable = false)
+    private BigDecimal valor;
 
     @NotNull
-    private final LocalDateTime dataDeCriacao;
+    @Column(nullable = false)
+    private LocalDateTime dataDeCriacao;
 
-    private final Cartao cartao;
+    @ManyToOne
+    private Cartao cartao;
 
-    public ParcelaResponse(@NotBlank String idParcela, @NotNull Integer quantidade, @NotNull BigDecimal valor, @NotNull LocalDateTime dataDeCriacao, Cartao cartao) {
+    @Deprecated
+    public Parcela() {
+    }
+
+    public Parcela(@NotBlank String idParcela, @NotNull Integer quantidade, @NotNull BigDecimal valor, @NotNull LocalDateTime dataDeCriacao, Cartao cartao) {
         this.idParcela = idParcela;
         this.quantidade = quantidade;
         this.valor = valor;
@@ -31,14 +46,8 @@ public class ParcelaResponse {
         this.cartao = cartao;
     }
 
-    public Parcela toModel() {
-        return new Parcela(
-                idParcela,
-                quantidade,
-                valor,
-                dataDeCriacao,
-                cartao
-        );
+    public Long getId() {
+        return id;
     }
 
     public Cartao getCartao() {
@@ -60,4 +69,6 @@ public class ParcelaResponse {
     public LocalDateTime getDataDeCriacao() {
         return dataDeCriacao;
     }
+
+
 }

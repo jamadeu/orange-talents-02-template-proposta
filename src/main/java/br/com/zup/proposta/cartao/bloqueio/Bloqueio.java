@@ -1,6 +1,7 @@
-package br.com.zup.proposta.bloqueio;
+package br.com.zup.proposta.cartao.bloqueio;
 
 import br.com.zup.proposta.cartao.Cartao;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -31,6 +32,7 @@ public class Bloqueio {
     private Boolean ativo;
 
     @ManyToOne
+    @JsonIgnore
     private Cartao cartao;
 
     private String ip;

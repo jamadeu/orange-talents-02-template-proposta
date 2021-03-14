@@ -2,11 +2,11 @@ package br.com.zup.proposta.cartao;
 
 import br.com.zup.proposta.aviso.Aviso;
 import br.com.zup.proposta.biometria.Biometria;
-import br.com.zup.proposta.bloqueio.Bloqueio;
+import br.com.zup.proposta.cartao.bloqueio.Bloqueio;
 import br.com.zup.proposta.carteira.Carteira;
 import br.com.zup.proposta.carteira.TipoCarteira;
 import br.com.zup.proposta.novaProposta.Proposta;
-import br.com.zup.proposta.parcela.Parcela;
+import br.com.zup.proposta.cartao.parcela.Parcela;
 import br.com.zup.proposta.renegociacao.Renegociacao;
 import br.com.zup.proposta.vencimento.Vencimento;
 
