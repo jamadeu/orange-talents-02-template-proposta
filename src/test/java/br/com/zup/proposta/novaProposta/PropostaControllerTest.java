@@ -1,7 +1,6 @@
 package br.com.zup.proposta.novaProposta;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -21,7 +20,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.Random;
@@ -45,14 +43,6 @@ class PropostaControllerTest {
 
     @Autowired
     private PropostaRepository propostaRepository;
-
-    @Autowired
-    private EntityManager manager;
-
-    @BeforeEach
-    void setup() {
-        propostaRepository.deleteAll();
-    }
 
     @Test
     @WithMockUser
@@ -286,64 +276,8 @@ class PropostaControllerTest {
 
         MvcResult mvcResult = performPost(novaPropostaRequest, 422);
 
-        String errorMessage = mvcResult.getResponse().getContentAsString();
-        assertEquals(errorMessage, "{\"mensagens\":[\"Ja existe uma proposta para este cliente\"]}");
-    }
-
-    @WithMockUser
-    @Test
-    @DisplayName("Quando a analise retornar 'SEM_RESTRICAO' o status da proposta deve ser 'ELEGIVEL'")
-    void metodoCria_StatusPropostaElegivel_QuandoClienteNaoPossuirRestricao() throws Exception {
-        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
-                "041.112.040-90",
-                "email@test.com",
-                "Nome",
-                new EnderecoRequest(
-                        "Rua",
-                        "100",
-                        "Bairro",
-                        "Cidade",
-                        "Estado",
-                        "cep"),
-                new BigDecimal(2000)
-        );
-
-        MvcResult mvcResult = performPost(novaPropostaRequest, 201);
-        String location = mvcResult.getResponse().getHeader("Location");
-        assertNotNull(location);
-        long idProposta = Long.parseLong(location.substring(location.length() - 1));
-        Proposta proposta = propostaRepository.findById(idProposta).orElseThrow();
-
-        assertEquals(proposta.getEmail(), novaPropostaRequest.getEmail());
-        assertEquals(proposta.getStatusProposta(), StatusProposta.ELEGIVEL);
-    }
-
-    @WithMockUser
-    @Test
-    @DisplayName("Quando a analise retornar 'COM_RESTRICAO' o status da proposta deve ser 'NAO_ELEGIVEL'")
-    void metodoCria_StatusPropostaNaoElegivel_QuandoClientePossuirRestricao() throws Exception {
-        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
-                "366.112.150-26",
-                "email@test.com",
-                "Nome",
-                new EnderecoRequest(
-                        "Rua",
-                        "100",
-                        "Bairro",
-                        "Cidade",
-                        "Estado",
-                        "cep"),
-                new BigDecimal(2000)
-        );
-
-        MvcResult mvcResult = performPost(novaPropostaRequest, 201);
-        String location = mvcResult.getResponse().getHeader("Location");
-        assertNotNull(location);
-        long idProposta = Long.parseLong(location.substring(location.length() - 1));
-        Proposta proposta = propostaRepository.findById(idProposta).orElseThrow();
-
-        assertEquals(proposta.getEmail(), novaPropostaRequest.getEmail());
-        assertEquals(proposta.getStatusProposta(), StatusProposta.NAO_ELEGIVEL);
+        String errorMessage = mvcResult.getResponse().getErrorMessage();
+        assertEquals(errorMessage, "Ja existe uma proposta para este cliente");
     }
 
     @WithMockUser
@@ -375,7 +309,7 @@ class PropostaControllerTest {
                 "\"estado\":\"Estado\"," +
                 "\"cep\":\"cep\"}," +
                 "\"salario\":\"2000\"," +
-                "\"status\":\"null\"," +
+                "\"status\":\"PENDENTE\"," +
                 "\"cartao\":\"Nao possui cartao\"}";
 
         String url = URL_API_PROPOSTA + "/" + proposta.getId();

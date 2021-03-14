@@ -47,7 +47,7 @@ public class Proposta {
     private BigDecimal salario;
 
     @Enumerated(EnumType.STRING)
-    private StatusProposta statusProposta;
+    private StatusProposta statusProposta = StatusProposta.PENDENTE;
 
     @OneToOne(mappedBy = "proposta", cascade = CascadeType.ALL)
     private Cartao cartao;
@@ -55,6 +55,7 @@ public class Proposta {
     private Boolean concluido;
 
     private LocalDateTime concluidoEm;
+    private LocalDateTime updatedAt;
 
     @Deprecated
     public Proposta() {
@@ -108,13 +109,14 @@ public class Proposta {
         return concluidoEm;
     }
 
-    public void alteraStatus(TipoStatus tipoStatus) {
-        if (tipoStatus == TipoStatus.SEM_RESTRICAO) {
-            this.statusProposta = StatusProposta.ELEGIVEL;
-        } else {
-            this.statusProposta = StatusProposta.NAO_ELEGIVEL;
-            this.concluiProposta();
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+
+    public void alteraStatus(StatusProposta status) {
+        if (status == null){
+            throw new IllegalArgumentException("Status nao pode ser nulo");
         }
+        this.statusProposta = status;
+        this.updatedAt = LocalDateTime.now();
     }
 
     public void adicionaCartao(@NotNull Cartao cartao) {
@@ -125,5 +127,21 @@ public class Proposta {
     public void concluiProposta() {
         this.concluidoEm = LocalDateTime.now();
         this.concluido = true;
+    }
+
+    @Override
+    public String toString() {
+        return "Proposta{" +
+                "id=" + id +
+                ", documento='" + documento + '\'' +
+                ", email='" + email + '\'' +
+                ", nome='" + nome + '\'' +
+                ", endereco=" + endereco +
+                ", salario=" + salario +
+                ", statusProposta=" + statusProposta +
+                ", cartao=" + cartao +
+                ", concluido=" + concluido +
+                ", concluidoEm=" + concluidoEm +
+                '}';
     }
 }

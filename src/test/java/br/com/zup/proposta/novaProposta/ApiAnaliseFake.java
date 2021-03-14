@@ -18,18 +18,14 @@ public class ApiAnaliseFake {
     public ResponseEntity<AnaliseResponse> analise(@RequestBody AnaliseRequest request) {
         if (request.getDocumento().startsWith("3")) {
             AnaliseResponse analiseResponse = new AnaliseResponse(
-                    request.getDocumento(),
-                    request.getNome(),
-                    TipoStatus.COM_RESTRICAO,
-                    request.getIdProposta()
+                    request.getIdProposta(),
+                    TipoStatus.COM_RESTRICAO
             );
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(analiseResponse);
         }
         AnaliseResponse analiseResponse = new AnaliseResponse(
-                request.getDocumento(),
-                request.getNome(),
-                TipoStatus.SEM_RESTRICAO,
-                request.getIdProposta()
+                request.getIdProposta(),
+                TipoStatus.SEM_RESTRICAO
         );
         return ResponseEntity.status(HttpStatus.CREATED).body(analiseResponse);
     }

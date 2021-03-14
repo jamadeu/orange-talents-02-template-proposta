@@ -35,16 +35,16 @@ public class Cartao {
     private String titular;
 
     @OneToMany(mappedBy = "cartao", cascade = CascadeType.MERGE)
-    private List<Bloqueio> bloqueios = new ArrayList<>();
+    private final List<Bloqueio> bloqueios = new ArrayList<>();
 
     @OneToMany(mappedBy = "cartao", cascade = CascadeType.MERGE)
-    private List<Aviso> avisos = new ArrayList<>();
+    private final List<Aviso> avisos = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.MERGE)
-    private List<Carteira> carteiras = new ArrayList<>();
+    private final List<Carteira> carteiras = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.MERGE)
-    private List<Parcela> parcelas = new ArrayList<>();
+    private final List<Parcela> parcelas = new ArrayList<>();
 
     @NotNull
     private BigDecimal limite;
@@ -70,16 +70,11 @@ public class Cartao {
     public Cartao() {
     }
 
-    public Cartao(@NotBlank String numero, @NotNull LocalDateTime emitidoEm, @NotBlank String titular, List<Bloqueio> bloqueios, List<Aviso> avisos, List<Carteira> carteiras, List<Parcela> parcelas, @NotNull BigDecimal limite, Renegociacao renegociacao, Vencimento vencimento, @NotNull Proposta proposta) {
+    public Cartao(@NotBlank String numero, @NotNull LocalDateTime emitidoEm, @NotBlank String titular, @NotNull BigDecimal limite, Vencimento vencimento, @NotNull Proposta proposta) {
         this.numero = numero;
         this.emitidoEm = emitidoEm;
         this.titular = titular;
-        this.bloqueios = bloqueios;
-        this.avisos = avisos;
-        this.carteiras = carteiras;
-        this.parcelas = parcelas;
         this.limite = limite;
-        this.renegociacao = renegociacao;
         this.vencimento = vencimento;
         this.proposta = proposta;
     }
@@ -170,4 +165,23 @@ public class Cartao {
         return biometrias;
     }
 
+    @Override
+    public String toString() {
+        return "Cartao{" +
+                "id=" + id +
+                ", numero='" + numero + '\'' +
+                ", emitidoEm=" + emitidoEm +
+                ", titular='" + titular + '\'' +
+                ", bloqueios=" + bloqueios +
+                ", avisos=" + avisos +
+                ", carteiras=" + carteiras +
+                ", parcelas=" + parcelas +
+                ", limite=" + limite +
+                ", renegociacao=" + renegociacao +
+                ", vencimento=" + vencimento +
+                ", proposta=" + proposta +
+                ", biometrias=" + biometrias +
+                ", status=" + status +
+                '}';
+    }
 }

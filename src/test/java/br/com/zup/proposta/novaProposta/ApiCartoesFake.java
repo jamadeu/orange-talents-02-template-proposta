@@ -1,7 +1,7 @@
 package br.com.zup.proposta.novaProposta;
 
 import br.com.zup.proposta.cartao.CartaoRequest;
-import br.com.zup.proposta.cartao.CartaoResponse;
+import br.com.zup.proposta.cartao.CriaCartaoResponse;
 import br.com.zup.proposta.vencimento.VencimentoResponse;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
@@ -18,17 +18,11 @@ import java.time.LocalDateTime;
 public class ApiCartoesFake {
 
     @PostMapping("/api/fake/cartoes")
-    public ResponseEntity<CartaoResponse> cria(@RequestBody @Valid CartaoRequest request) {
-        CartaoResponse cartaoResponse = new CartaoResponse(
+    public ResponseEntity<CriaCartaoResponse> cria(@RequestBody @Valid CartaoRequest request) {
+        CriaCartaoResponse criaCartaoResponse = new CriaCartaoResponse(
                 "5312995574366723",
                 LocalDateTime.now(),
-                request.getNome(),
-                null,
-                null,
-                null,
-                null,
                 new BigDecimal(2000),
-                null,
                 new VencimentoResponse(
                         "1",
                         20,
@@ -36,6 +30,6 @@ public class ApiCartoesFake {
                 ),
                 String.valueOf(request.getIdProposta())
         );
-        return ResponseEntity.ok(cartaoResponse);
+        return ResponseEntity.ok(criaCartaoResponse);
     }
 }

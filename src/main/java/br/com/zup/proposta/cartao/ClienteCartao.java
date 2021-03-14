@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 public interface ClienteCartao {
 
     @PostMapping
-    CartaoResponse solicita(CartaoRequest cartaoRequest);
+    CriaCartaoResponse solicita(CartaoRequest cartaoRequest);
 
     @PostMapping("/{id}/bloqueios")
     void bloquear(@PathVariable String id, BloqueioRequest request);
 
     @GetMapping("/{id}")
-    CartaoResponse buscaCartaoPorId(@PathVariable String id);
+    BuscaCartaoResponse buscaCartaoPorId(@PathVariable String id);
 
     @PostMapping("/{id}/avisos")
     void criaAviso(@PathVariable String id, AvisoRequest request);

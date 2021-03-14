@@ -1,30 +1,29 @@
 package br.com.zup.proposta.analise;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import br.com.zup.proposta.novaProposta.StatusProposta;
 
 public class AnaliseResponse {
 
-    @JsonProperty
-    private String documento;
-    @JsonProperty
-    private String nome;
-    @JsonProperty
-    private TipoStatus resultadoSolicitacao;
-    @JsonProperty
-    private String idProposta;
+    private final String idProposta;
+    private final TipoStatus status;
 
-    public AnaliseResponse(String documento, String nome, TipoStatus resultadoSolicitacao, String idProposta) {
-        this.documento = documento;
-        this.nome = nome;
-        this.resultadoSolicitacao = resultadoSolicitacao;
+    public AnaliseResponse(String idProposta, TipoStatus status) {
         this.idProposta = idProposta;
+        this.status = status;
     }
 
-    public AnaliseResponse(TipoStatus resultadoSolicitacao) {
-        this.resultadoSolicitacao = resultadoSolicitacao;
+    public StatusProposta toModel() {
+        if (TipoStatus.COM_RESTRICAO.equals(status)) {
+            return StatusProposta.NAO_ELEGIVEL;
+        }
+        return StatusProposta.ELEGIVEL;
     }
 
-    public TipoStatus getResultadoSolicitacao() {
-        return resultadoSolicitacao;
+    public String getIdProposta() {
+        return idProposta;
+    }
+
+    public TipoStatus getStatus() {
+        return status;
     }
 }
