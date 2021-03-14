@@ -1,5 +1,7 @@
 package br.com.zup.proposta.jobs;
 
+import br.com.zup.proposta.cartao.Cartao;
+import br.com.zup.proposta.cartao.CartaoRepository;
 import br.com.zup.proposta.novaProposta.Endereco;
 import br.com.zup.proposta.novaProposta.Proposta;
 import br.com.zup.proposta.novaProposta.PropostaRepository;
@@ -16,24 +18,28 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureTestDatabase
 @ActiveProfiles("test")
 @Transactional
-class SubmeteAnaliseTest {
+class SolicitaCartaoTest {
 
     @Autowired
-    private SubmeteAnalise submeteAnalise;
+    private SolicitaCartao solicitaCartao;
 
     @Autowired
     private PropostaRepository propostaRepository;
 
+    @Autowired
+    private CartaoRepository cartaoRepository;
+
     @WithMockUser
     @Test
-    @DisplayName("Quando a analise retornar 'SEM_RESTRICAO' o status da proposta deve ser 'ELEGIVEL'")
-    void metodoCria_StatusPropostaElegivel_QuandoClienteNaoPossuirRestricao() {
-        Proposta novaProposta = propostaRepository.save(new Proposta(
+    @DisplayName("adiciona cartao a proposta'")
+    void adicionaCartao() {
+        Proposta novaProposta = new Proposta(
                 "971.706.120-38",
                 "email@teste.com",
                 "Nome",
@@ -46,37 +52,16 @@ class SubmeteAnaliseTest {
                         "cep"
                 ),
                 new BigDecimal(2000)
-        ));
-        submeteAnalise.submetePropostasParaAnalise();
+        );
+        novaProposta.alteraStatus(StatusProposta.ELEGIVEL);
+        propostaRepository.save(novaProposta);
+        solicitaCartao.solicitaCartao();
         Proposta proposta = propostaRepository.findById(novaProposta.getId()).orElseThrow();
+        Cartao cartao = cartaoRepository.findById(proposta.getCartao().getId()).orElseThrow();
 
+        assertEquals(cartao, proposta.getCartao());
         assertEquals(proposta.getEmail(), novaProposta.getEmail());
-        assertEquals(StatusProposta.ELEGIVEL, proposta.getStatusProposta());
-    }
-
-    @WithMockUser
-    @Test
-    @DisplayName("Quando a analise retornar 'COM_RESTRICAO' o status da proposta deve ser 'NAO_ELEGIVEL'")
-    void metodoCria_StatusPropostaNaoElegivel_QuandoClientePossuirRestricao() {
-        Proposta novaProposta = propostaRepository.save(new Proposta(
-                "366.112.150-26",
-                "email@teste.com",
-                "Nome",
-                new Endereco(
-                        "Rua",
-                        "100",
-                        "Bairro",
-                        "Cidade",
-                        "Estado",
-                        "cep"
-                ),
-                new BigDecimal(2000)
-        ));
-        submeteAnalise.submetePropostasParaAnalise();
-        Proposta proposta = propostaRepository.findById(novaProposta.getId()).orElseThrow();
-
-        assertEquals(proposta.getEmail(), novaProposta.getEmail());
-        assertEquals(StatusProposta.NAO_ELEGIVEL, proposta.getStatusProposta());
+        assertEquals(StatusProposta.CONCLUIDA, proposta.getStatusProposta());
     }
 
 }

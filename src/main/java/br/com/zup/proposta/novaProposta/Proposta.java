@@ -1,11 +1,7 @@
 package br.com.zup.proposta.novaProposta;
 
-import br.com.zup.proposta.analise.TipoStatus;
 import br.com.zup.proposta.cartao.Cartao;
 import br.com.zup.proposta.compartilhado.anotacoes.CpfOuCnpj;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.security.crypto.encrypt.Encryptors;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -52,10 +48,7 @@ public class Proposta {
     @OneToOne(mappedBy = "proposta", cascade = CascadeType.ALL)
     private Cartao cartao;
 
-    private Boolean concluido;
-
-    private LocalDateTime concluidoEm;
-    private LocalDateTime updatedAt;
+    private LocalDateTime atualizadaEm;
 
     @Deprecated
     public Proposta() {
@@ -101,22 +94,16 @@ public class Proposta {
         return salario;
     }
 
-    public Boolean getConcluido() {
-        return concluido;
+    public LocalDateTime getAtualizadaEm() {
+        return atualizadaEm;
     }
-
-    public LocalDateTime getConcluidoEm() {
-        return concluidoEm;
-    }
-
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
 
     public void alteraStatus(StatusProposta status) {
-        if (status == null){
+        if (status == null) {
             throw new IllegalArgumentException("Status nao pode ser nulo");
         }
         this.statusProposta = status;
-        this.updatedAt = LocalDateTime.now();
+        this.atualizadaEm = LocalDateTime.now();
     }
 
     public void adicionaCartao(@NotNull Cartao cartao) {
@@ -125,8 +112,8 @@ public class Proposta {
     }
 
     public void concluiProposta() {
-        this.concluidoEm = LocalDateTime.now();
-        this.concluido = true;
+        this.atualizadaEm = LocalDateTime.now();
+        this.statusProposta = StatusProposta.CONCLUIDA;
     }
 
     @Override
@@ -140,8 +127,7 @@ public class Proposta {
                 ", salario=" + salario +
                 ", statusProposta=" + statusProposta +
                 ", cartao=" + cartao +
-                ", concluido=" + concluido +
-                ", concluidoEm=" + concluidoEm +
+                ", atualizadaEm=" + atualizadaEm +
                 '}';
     }
 }
