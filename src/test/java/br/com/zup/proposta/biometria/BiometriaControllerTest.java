@@ -1,10 +1,8 @@
 package br.com.zup.proposta.biometria;
 
 import br.com.zup.proposta.cartao.Cartao;
-import br.com.zup.proposta.novaProposta.EnderecoRequest;
-import br.com.zup.proposta.novaProposta.NovaPropostaRequest;
-import br.com.zup.proposta.novaProposta.Proposta;
-import br.com.zup.proposta.novaProposta.PropostaRepository;
+import br.com.zup.proposta.novaProposta.*;
+import br.com.zup.proposta.vencimento.Vencimento;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,35 +15,32 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.Base64;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
-        properties = {
-                "API_ANALISE=http://localhost:8080/api/analise-fake",
-                "API_CARTOES=http://localhost:8080/api/cartoes-fake"
-        })
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureTestDatabase
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@Transactional
 class BiometriaControllerTest {
 
     private final String URI_API_BIOMETRIA = "/api/biometria";
-    private final String URI_API_PROPOSTA = "/api/proposta";
 
     @Autowired
     private MockMvc mockMvc;
@@ -63,28 +58,37 @@ class BiometriaControllerTest {
 
     @BeforeEach
     void setup() throws Exception {
-        NovaPropostaRequest novaPropostaRequest = new NovaPropostaRequest(
-                "041.112.040-90",
-                "email@test.com",
+        Proposta proposta = new Proposta(
+                "971.706.120-38",
+                "email@teste.com",
                 "Nome",
-                new EnderecoRequest(
+                new Endereco(
                         "Rua",
                         "100",
                         "Bairro",
                         "Cidade",
                         "Estado",
-                        "cep"),
+                        "cep"
+                ),
                 new BigDecimal(2000)
         );
-
-        MvcResult mvcResult = performPost(novaPropostaRequest, 201, URI_API_PROPOSTA);
-        Thread.sleep(1500);
-        String location = mvcResult.getResponse().getHeader("Location");
-        String idProposta = location.substring(location.length() - 1);
-        Proposta proposta = em.find(Proposta.class, Long.parseLong(idProposta));
-        cartao = proposta.getCartao();
+        proposta.adicionaCartao( new Cartao(
+                "5180 2059 9038 4287",
+                LocalDateTime.now(),
+                proposta.getNome(),
+                new BigDecimal(1000),
+                new Vencimento(
+                        "id",
+                        14,
+                        LocalDateTime.now()
+                ),
+                proposta
+        ));
+        propostaRepository.save(proposta);
+        this.cartao = proposta.getCartao();
     }
 
+    @WithMockUser
     @Test
     @DisplayName("Retorna 201 quando biometria adicionada ao cartao com sucesso")
     void retorna201_QuandoSucesso() throws Exception {
@@ -101,6 +105,7 @@ class BiometriaControllerTest {
         assertEquals(cartao.getNumero(), cartaoBio.getNumero());
     }
 
+    @WithMockUser
     @ParameterizedTest
     @NullSource
     @EmptySource
