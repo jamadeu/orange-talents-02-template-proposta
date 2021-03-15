@@ -13,7 +13,6 @@ spring:
     hibernate.ddl-auto: update
 
 api:
-  auth:
   analise: http://localhost:8080/api/fake/analise
   cartoes: http://localhost:8080/api/fake/cartoes
 

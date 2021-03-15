@@ -55,6 +55,5 @@ opentracing:
       sampling-rate: ${JAEGER_SAMPLER:1}
 
 api:
-  auth: ${API_AUTH}
   analise: ${API_ANALISE}
   cartoes: ${API_CARTAO}
