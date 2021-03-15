@@ -117,6 +117,33 @@ class AvisoControllerTest {
         assertEquals(0, avisos.size());
     }
 
+    @WithMockUser
+    @ParameterizedTest
+    @NullSource
+    @DisplayName("Retorna 400 quando validoAte nulo")
+    void retorna400validoAteNulo(LocalDate validoAte) throws Exception {
+        String uri = URI_API_AVISO + "/" + cartao.getId();
+        AvisoRequest request = new AvisoRequest("Destino", validoAte);
+        MvcResult mvcResult = performPost(request, 400, uri);
+
+        List<Aviso> avisos = cartao.getAvisos();
+        assertEquals(0, avisos.size());
+    }
+
+    @WithMockUser
+    @Test
+    @NullSource
+    @EmptySource
+    @DisplayName("Retorna 400 quando validoAte é passado")
+    void retorna400ValidoAtePassado() throws Exception {
+        String uri = URI_API_AVISO + "/" + cartao.getId();
+        AvisoRequest request = new AvisoRequest("Destino", LocalDate.of(2020, 12, 12));
+        MvcResult mvcResult = performPost(request, 400, uri);
+
+        List<Aviso> avisos = cartao.getAvisos();
+        assertEquals(0, avisos.size());
+    }
+
 
     private MvcResult performPost(Object request, int status, String uri) throws Exception {
         return mockMvc.perform(MockMvcRequestBuilders

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -31,7 +32,7 @@ public class AvisoController {
 
     @PostMapping("/{id}")
     @Transactional
-    public ResponseEntity<?> adicionaAviso(@PathVariable("id") Long idCartao, @RequestBody AvisoRequest request,
+    public ResponseEntity<?> adicionaAviso(@PathVariable("id") Long idCartao, @RequestBody @Valid AvisoRequest request,
                                            HttpServletRequest requestDetails, @RequestHeader("user-agent") String agent) {
         Cartao cartao = cartaoRepository.findById(idCartao)
                 .orElseThrow(() -> {

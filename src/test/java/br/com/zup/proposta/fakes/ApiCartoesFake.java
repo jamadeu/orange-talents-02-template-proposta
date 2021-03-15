@@ -1,11 +1,11 @@
 package br.com.zup.proposta.fakes;
 
-import br.com.zup.proposta.cartao.aviso.Aviso;
-import br.com.zup.proposta.cartao.aviso.AvisoRequest;
 import br.com.zup.proposta.cartao.BuscaCartaoResponse;
 import br.com.zup.proposta.cartao.Cartao;
 import br.com.zup.proposta.cartao.CartaoRequest;
 import br.com.zup.proposta.cartao.CriaCartaoResponse;
+import br.com.zup.proposta.cartao.aviso.Aviso;
+import br.com.zup.proposta.cartao.aviso.AvisoRequest;
 import br.com.zup.proposta.cartao.bloqueio.Bloqueio;
 import br.com.zup.proposta.cartao.bloqueio.BloqueioRequest;
 import br.com.zup.proposta.cartao.vencimento.Vencimento;
@@ -71,7 +71,7 @@ public class ApiCartoesFake {
     }
 
     @PostMapping("/{id}/bloqueios")
-    public ResponseEntity<Void> bloqueio(@RequestBody BloqueioRequest request) {
+    public ResponseEntity<Void> bloqueio(@RequestBody @Valid BloqueioRequest request) {
         Bloqueio bloqueio = new Bloqueio(
                 "123",
                 LocalDateTime.now(),
@@ -84,7 +84,7 @@ public class ApiCartoesFake {
     }
 
     @PostMapping("/{id}/avisos")
-    public ResponseEntity<Void> aviso(@RequestBody AvisoRequest request) {
+    public ResponseEntity<Void> aviso(@RequestBody @Valid AvisoRequest request) {
         Aviso aviso = new Aviso(
                 request.getValidoAte(),
                 request.getDestino(),
