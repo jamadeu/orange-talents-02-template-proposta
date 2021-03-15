@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,9 +41,6 @@ public class ControllerAdvice {
         return dto;
     }
 
-    @ExceptionHandler(PropostaUnicaException.class)
-    public ResponseEntity<ErroDTO> handleMethodArgumentNotValidException(PropostaUnicaException exception) {
-        ErroDTO erroDTO = new ErroDTO(List.of(exception.getMensagem()));
-        return ResponseEntity.unprocessableEntity().body(erroDTO);
-    }
+
+
 }

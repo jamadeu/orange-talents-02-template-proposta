@@ -1,62 +1,58 @@
-package br.com.zup.proposta.aviso;
+package br.com.zup.proposta.cartao.aviso;
 
 import br.com.zup.proposta.cartao.Cartao;
+import br.com.zup.proposta.cartao.CartaoRepository;
 import br.com.zup.proposta.cartao.ClienteCartao;
 import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/avisos")
+@RequestMapping("/api/aviso")
 public class AvisoController {
 
     final Logger logger = LoggerFactory.getLogger(AvisoController.class);
 
-    @PersistenceContext
-    private EntityManager em;
-
+    private final CartaoRepository cartaoRepository;
     private final ClienteCartao clienteCartao;
 
-    public AvisoController(ClienteCartao clienteCartao) {
+    public AvisoController(ClienteCartao clienteCartao, CartaoRepository cartaoRepository) {
         this.clienteCartao = clienteCartao;
+        this.cartaoRepository = cartaoRepository;
     }
 
     @PostMapping("/{id}")
+    @Transactional
     public ResponseEntity<?> adicionaAviso(@PathVariable("id") Long idCartao, @RequestBody AvisoRequest request,
                                            HttpServletRequest requestDetails, @RequestHeader("user-agent") String agent) {
-        logger.info("Busca cartao id={}", idCartao);
-        Cartao cartao = em.find(Cartao.class, idCartao);
-        if (cartao == null) {
-            logger.error("Cartao id={} nao localizado", idCartao);
-            return ResponseEntity.notFound().build();
-        }
+        Cartao cartao = cartaoRepository.findById(idCartao)
+                .orElseThrow(() -> {
+                    logger.error("Cartao id={} nao localizado", idCartao);
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+                });
 
         try {
             logger.info("Gerando aviso de viagem para o cartao id={}", cartao.getId());
             clienteCartao.criaAviso(cartao.getNumero(), request);
             List<Aviso> avisos = clienteCartao.buscaCartaoPorId(cartao.getNumero()).getAvisos();
             Aviso aviso = avisos.get(avisos.size() - 1);
-            logger.info("Aviso criado {}", aviso);
             aviso.adicionaInfosSolicitante(requestDetails.getRemoteAddr(), agent);
-            logger.info("Adicionado ip = {} e userAgent = {} ao aviso {}", requestDetails.getRemoteAddr(), agent, aviso);
-            em.persist(aviso);
-            logger.info("Aviso id = {} persistido", aviso.getId());
             cartao.adicionaAviso(aviso);
-            logger.info("Aviso id = {} adicionado ao cartao id = {}", aviso.getId(), cartao.getId());
-            em.merge(cartao);
-            logger.info("Cartao id = {} atualizado no banco", cartao.getId());
+            cartaoRepository.save(cartao);
+            logger.info("Cartao id = {} atualizado", cartao.getId());
         } catch (FeignException e) {
             logger.error("Erro ao gerar aviso de viagem para o cartao id = {}", cartao.getId());
             logger.error("Status {}", e.status());
             logger.error("Mensagem {}", e.getMessage());
-            return ResponseEntity.unprocessableEntity().build();
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
         return ResponseEntity.ok().build();

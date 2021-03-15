@@ -1,6 +1,6 @@
 package br.com.zup.proposta.cartao;
 
-import br.com.zup.proposta.aviso.AvisoRequest;
+import br.com.zup.proposta.cartao.aviso.AvisoRequest;
 import br.com.zup.proposta.cartao.bloqueio.BloqueioRequest;
 import br.com.zup.proposta.carteira.CarteiraRequest;
 import org.springframework.cloud.openfeign.FeignClient;

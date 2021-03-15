@@ -1,7 +1,7 @@
 package br.com.zup.proposta.cartao;
 
 import br.com.zup.proposta.novaProposta.Proposta;
-import br.com.zup.proposta.vencimento.VencimentoResponse;
+import br.com.zup.proposta.cartao.vencimento.VencimentoResponse;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

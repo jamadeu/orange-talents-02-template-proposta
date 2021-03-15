@@ -1,4 +1,4 @@
-package br.com.zup.proposta.vencimento;
+package br.com.zup.proposta.cartao.vencimento;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;

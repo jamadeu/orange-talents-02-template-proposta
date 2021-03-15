@@ -1,6 +1,7 @@
-package br.com.zup.proposta.aviso;
+package br.com.zup.proposta.cartao.aviso;
 
 import br.com.zup.proposta.cartao.Cartao;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -24,6 +25,7 @@ public class Aviso {
     private String destino;
 
     @ManyToOne
+    @JsonIgnore
     private Cartao cartao;
 
     private String ip;

@@ -1,4 +1,4 @@
-package br.com.zup.proposta.aviso;
+package br.com.zup.proposta.cartao.aviso;
 
 import br.com.zup.proposta.cartao.Cartao;
 

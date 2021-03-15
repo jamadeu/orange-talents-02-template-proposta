@@ -1,8 +1,10 @@
-package br.com.zup.proposta.biometria;
+package br.com.zup.proposta.cartao.aviso;
 
 import br.com.zup.proposta.cartao.Cartao;
-import br.com.zup.proposta.novaProposta.*;
-import br.com.zup.proposta.vencimento.Vencimento;
+import br.com.zup.proposta.cartao.vencimento.Vencimento;
+import br.com.zup.proposta.novaProposta.Endereco;
+import br.com.zup.proposta.novaProposta.Proposta;
+import br.com.zup.proposta.novaProposta.PropostaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +18,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -24,13 +25,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Base64;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -38,9 +38,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Transactional
-class BiometriaControllerTest {
+class AvisoControllerTest {
 
-    private final String URI_API_BIOMETRIA = "/api/biometria";
+    private final String URI_API_AVISO = "/api/aviso";
 
     @Autowired
     private MockMvc mockMvc;
@@ -50,9 +50,6 @@ class BiometriaControllerTest {
 
     @Autowired
     private PropostaRepository propostaRepository;
-
-    @PersistenceContext
-    private EntityManager em;
 
     private Cartao cartao;
 
@@ -72,7 +69,7 @@ class BiometriaControllerTest {
                 ),
                 new BigDecimal(2000)
         );
-        proposta.adicionaCartao( new Cartao(
+        proposta.adicionaCartao(new Cartao(
                 "5180 2059 9038 4287",
                 LocalDateTime.now(),
                 proposta.getNome(),
@@ -90,40 +87,47 @@ class BiometriaControllerTest {
 
     @WithMockUser
     @Test
-    @DisplayName("Retorna 201 quando biometria adicionada ao cartao com sucesso")
-    void retorna201_QuandoSucesso() throws Exception {
-        byte[] biometriaString = new String("Biometria").getBytes(StandardCharsets.UTF_8);
-        String uri = URI_API_BIOMETRIA + "/" + cartao.getId();
-        BiometriaRequest biometriaRequest = new BiometriaRequest(Base64.getEncoder().encodeToString(biometriaString));
-        MvcResult mvcResult = performPost(biometriaRequest, 201, uri);
+    @DisplayName("Retorna 200 quando aviso adicionado ao cartao com sucesso")
+    void retorna200() throws Exception {
+        String uri = URI_API_AVISO + "/" + cartao.getId();
+        AvisoRequest request = new AvisoRequest("Destino", LocalDate.of(2050, 3, 1));
+        MvcResult mvcResult = performPost(request, 200, uri);
 
-        String location = mvcResult.getResponse().getHeader("Location");
-        String idBiometria = location.substring(location.length() - 1);
-        Biometria biometria = em.find(Biometria.class, Long.parseLong(idBiometria));
-        Cartao cartaoBio = biometria.getCartao();
+        List<Aviso> avisos = cartao.getAvisos();
+        assertEquals(1, avisos.size());
 
-        assertEquals(cartao.getNumero(), cartaoBio.getNumero());
+        Aviso aviso = avisos.get(0);
+        assertAll(
+                () -> assertEquals("Destino", aviso.getDestino()),
+                () -> assertEquals(LocalDate.of(2050, 3, 1), aviso.getValidoAte())
+        );
     }
 
     @WithMockUser
     @ParameterizedTest
     @NullSource
     @EmptySource
-    @DisplayName("Retorna 400 quando biometria vazia ou nula")
-    void retorna400_QuandoBiometriaVaziaOuNula(String biometria) throws Exception {
-        String uri = URI_API_BIOMETRIA + "/" + cartao.getId();
-        BiometriaRequest biometriaRequest = new BiometriaRequest(biometria);
-        MvcResult mvcResult = performPost(biometriaRequest, 400, uri);
+    @DisplayName("Retorna 400 quando destino vazio ou nulo")
+    void retorna400DestinoVazioOuNulo(String destino) throws Exception {
+        String uri = URI_API_AVISO + "/" + cartao.getId();
+        AvisoRequest request = new AvisoRequest(destino, LocalDate.of(2050, 3, 1));
+        MvcResult mvcResult = performPost(request, 400, uri);
+
+        List<Aviso> avisos = cartao.getAvisos();
+        assertEquals(0, avisos.size());
     }
+
 
     private MvcResult performPost(Object request, int status, String uri) throws Exception {
         return mockMvc.perform(MockMvcRequestBuilders
                 .post(uri)
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
+                .header("user-agent", "username")
         ).andExpect(MockMvcResultMatchers
                 .status()
                 .is(status)
         ).andReturn();
     }
+
 }

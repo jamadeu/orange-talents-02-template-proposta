@@ -1,11 +1,11 @@
 package br.com.zup.proposta.cartao;
 
-import br.com.zup.proposta.aviso.Aviso;
+import br.com.zup.proposta.cartao.aviso.Aviso;
 import br.com.zup.proposta.cartao.bloqueio.Bloqueio;
 import br.com.zup.proposta.carteira.Carteira;
 import br.com.zup.proposta.cartao.parcela.Parcela;
-import br.com.zup.proposta.renegociacao.RenegociacaoResponse;
-import br.com.zup.proposta.vencimento.VencimentoResponse;
+import br.com.zup.proposta.cartao.renegociacao.RenegociacaoResponse;
+import br.com.zup.proposta.cartao.vencimento.VencimentoResponse;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

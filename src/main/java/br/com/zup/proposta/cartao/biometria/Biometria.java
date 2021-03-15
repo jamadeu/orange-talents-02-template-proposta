@@ -1,4 +1,4 @@
-package br.com.zup.proposta.biometria;
+package br.com.zup.proposta.cartao.biometria;
 
 import br.com.zup.proposta.cartao.Cartao;
 import com.fasterxml.jackson.annotation.JsonIgnore;

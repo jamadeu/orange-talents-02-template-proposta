@@ -1,4 +1,4 @@
-package br.com.zup.proposta.aviso;
+package br.com.zup.proposta.cartao.aviso;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
